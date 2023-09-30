@@ -4,6 +4,8 @@ import '../styles/global.css'
 import { Inter, Space_Grotesk } from 'next/font/google'
 import type { Metadata } from 'next'
 
+import { ThemeProvider } from '../context/ThemeProvider'
+
 export const metadata: Metadata = {
   title: 'devoverflow',
   description: 'A stackoverflow clone for developers',
@@ -29,7 +31,9 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${inter.variable} ${spaceGrotesk.variable}`}>
       <body>
-        {children}
+        <ThemeProvider>
+          {children}
+        </ThemeProvider>
       </body>
     </html>
   )
