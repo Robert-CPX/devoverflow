@@ -30,8 +30,8 @@ const config: Config = {
         },
         light: {
           900: "#FFFFFF",
-          800: "#F4F6F8",
           850: "#FDFDFD",
+          800: "#F4F6F8",
           700: "#DCE3F1",
           500: "#7B8EC8",
           400: "#858EAD",

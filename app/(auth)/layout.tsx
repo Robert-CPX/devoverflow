@@ -1,22 +1,19 @@
-import { ClerkProvider } from '@clerk/nextjs'
 import React from 'react'
 
 export const metadata = {
-  title: 'Clerk Authentication',
+  title: 'Authentication',
 }
 
-const RootLayout = ({
+const Layout = ({
   children
 }: {
   children: React.ReactNode
 }) => {
   return (
-    <ClerkProvider>
-      <html lang="en">
-        <body>{children}</body>
-      </html>
-    </ClerkProvider>
+    <html lang="en">
+      <body>{children}</body>
+    </html>
   )
 }
 
-export default RootLayout
+export default Layout

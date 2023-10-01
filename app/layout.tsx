@@ -3,8 +3,8 @@ import '../styles/global.css'
 // eslint-disable-next-line camelcase
 import { Inter, Space_Grotesk } from 'next/font/google'
 import type { Metadata } from 'next'
-
-import { ThemeProvider } from '../context/ThemeProvider'
+import { ClerkProvider } from '@clerk/nextjs'
+import ThemeProvider from '../context/ThemeProvider'
 
 export const metadata: Metadata = {
   title: 'devoverflow',
@@ -32,7 +32,9 @@ export default function RootLayout({
     <html lang="en" className={`${inter.variable} ${spaceGrotesk.variable}`}>
       <body>
         <ThemeProvider>
-          {children}
+          <ClerkProvider>
+            {children}
+          </ClerkProvider>
         </ThemeProvider>
       </body>
     </html>

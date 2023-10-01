@@ -17,12 +17,14 @@ const ThemeProvider = ({
   const [theme, setTheme] = useState('light')
 
   const handleThemeChange = () => {
-    if (theme === 'light') {
+    if (localStorage.theme === 'dark' ||
+       (!('theme' in localStorage) &&
+        window.matchMedia('(prefers-color-scheme: dark)').matches)) {
       setTheme('dark')
       document.documentElement.classList.add('dark')
     } else {
       setTheme('light')
-      document.documentElement.classList.add('light')
+      document.documentElement.classList.remove('dark')
     }
   }
 
