@@ -27,7 +27,7 @@ const QuestionCard = ({
       </div>
       <div className="mt-3 flex justify-between gap-2 max-[500px]:flex-col">
         <div className='flex justify-start gap-1'>
-          <Image src={question.author.profilePic ?? '/assets/icons/avatar.svg'} alt="profile pic" width={20} height={20} className='rounded-full'/>
+          <Image src={'/assets/icons/avatar.svg'} alt="profile pic" width={20} height={20} className='rounded-full'/>
           <p className='text-dark400_light800 body-medium'>{question.author.name}<span className='text-dark400_light800 small-regular'> • asked 25 days ago</span></p>
         </div>
         <div className='flex gap-2'>

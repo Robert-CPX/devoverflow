@@ -1,8 +1,10 @@
+'use client'
+
 import React from 'react'
 import Image from 'next/image'
 import { Input } from '@/components/ui/input'
 
-const NavSearchBar = () => {
+const GlobalSearchBar = () => {
   return (
     <div className='background-light800_darkgradient relative flex min-h-[56px] w-full max-w-[600px] items-center justify-start gap-1 rounded-lg px-4 max-lg:hidden'>
       <Image 
@@ -13,6 +15,7 @@ const NavSearchBar = () => {
       />
       <Input
         type='text'
+        onChange={() =>{}}
         className='text-dark400_light900 no-focus placeholder paragraph-regular border-none bg-transparent outline-none'
         placeholder='Search anything globally...'
       />
@@ -20,7 +23,9 @@ const NavSearchBar = () => {
   )
 }
 
-const HomeSearchBar = () => {
+type LocalSearchType = "Question" | "User"
+
+const LocalSearchBar = ({type}:{type:LocalSearchType}) => {
   return (
     <div className='background-light800_darkgradient relative flex min-h-[56px] w-full items-center justify-start gap-1 rounded-lg px-4'>
       <Image 
@@ -31,11 +36,12 @@ const HomeSearchBar = () => {
       />
       <Input
         type='text'
+        onChange={() =>{}}
         className='text-dark400_light900 no-focus placeholder paragraph-regular border-none bg-transparent outline-none'
-        placeholder='Search questions...'
+        placeholder={`${type === "Question" ? "Search questions..." : "Search amazing minds here..."}`}
       />
     </div>
   )
 }
 
-export {NavSearchBar, HomeSearchBar}
+export { GlobalSearchBar, LocalSearchBar }

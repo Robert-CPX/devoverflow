@@ -1,4 +1,4 @@
-import { SidebarLink, Question } from "."
+import { SidebarLink, Question, User } from "."
 
 export const themes = [
   {value: "light", label: "Light", icon: "/assets/icons/sun.svg"},
@@ -23,6 +23,12 @@ export const questionTypes = [
   {_id: 3, title: "Unanswered"},
 ]
 
+export const userFilterTypes = [
+  {_id: 1, title: "New Users"},
+  {_id: 2, title: "Old Users"},
+  {_id: 3, title: "Top Contributors"},
+]
+
 export const mockTopQuestions = [
   {_id: 1, title:"Would it be appropriate to point out an error in another paper during a referee report paper during a referee report paper during a referee report paper during a referee report paper during a referee report paper during a referee report paper during a referee report ?", url: "https://bing.com"},
   {_id: 2, title:"How can an airconditioning machine exis?", url: "https://bing.com"},
@@ -38,8 +44,15 @@ export const mockPopularTags = [
 ]
 
 export const mockQuestionData: Question[] = [
-  {_id: 1, title:"The Lightning Component c:LWC_PizzaTracker generated invalid output for field status. Error How to solve thisC_PizzaTracker generated invalid output for field status. Error How to solve this", tags:[{_id: 0, title: "Newest"}], author: {profilePic:"", name:"Sujata | JS Mastery"}, createdAt:"2021-08-01T00:00:00.000Z", voteNum:12, answerNum: 3, viewNum: 100},
-  {_id: 2, title:"The Lightning Component c:LWC_PizzaTracker generated invalid output for field status. Error How to solve this", tags:[{_id: 2, title: "ReactJs"}, {_id: 4, title: "Redux"}], author: {profilePic:"", name:"Sujata | JS Mastery"}, createdAt:"2021-08-01T00:00:00.000Z", voteNum:12, answerNum: 3, viewNum: 100},
-  {_id: 3, title:"The Lightning Component c:LWC_PizzaTracker generated invalid output for field status. Error How to solve this", tags:[{_id: 4, title: "Redux"},{_id: 9, title: "Vite"},{_id: 4, title: "Mongoose"}], author: {profilePic:"", name:"Sujata | JS Mastery"}, createdAt:"2021-08-01T00:00:00.000Z", voteNum:12, answerNum: 3, viewNum: 100},
-  {_id: 4, title:"The Lightning Component c:LWC_PizzaTracker generated invalid output for field status. Error How to solve this", tags:[{_id: 9, title: "JS"}], author: {profilePic:"", name:"Sujata | JS Mastery"}, createdAt:"2021-08-01T00:00:00.000Z", voteNum:12, answerNum: 3, viewNum: 100},
+  {_id: 1, title:"The Lightning Component c:LWC_PizzaTracker generated invalid output for field status. Error How to solve thisC_PizzaTracker generated invalid output for field status. Error How to solve this", tags:[{_id: 0, title: "Newest"}], author: {profilePic:"", name:"Sujata | JS Mastery", nickname:"", tags:[]}, createdAt:"2021-08-01T00:00:00.000Z", voteNum:12, answerNum: 3, viewNum: 100},
+  {_id: 2, title:"The Lightning Component c:LWC_PizzaTracker generated invalid output for field status. Error How to solve this", tags:[{_id: 2, title: "ReactJs"}, {_id: 4, title: "Redux"}], author: {profilePic:"", name:"Sujata | JS Mastery", nickname:"", tags:[]}, createdAt:"2021-08-01T00:00:00.000Z", voteNum:12, answerNum: 3, viewNum: 100},
+  {_id: 3, title:"The Lightning Component c:LWC_PizzaTracker generated invalid output for field status. Error How to solve this", tags:[{_id: 4, title: "Redux"},{_id: 9, title: "Vite"},{_id: 4, title: "Mongoose"}], author: {profilePic:"", name:"Sujata | JS Mastery", nickname:"", tags:[]}, createdAt:"2021-08-01T00:00:00.000Z", voteNum:12, answerNum: 3, viewNum: 100},
+  {_id: 4, title:"The Lightning Component c:LWC_PizzaTracker generated invalid output for field status. Error How to solve this", tags:[{_id: 9, title: "JS"}], author: {profilePic:"", name:"Sujata | JS Mastery", nickname:"", tags:[]}, createdAt:"2021-08-01T00:00:00.000Z", voteNum:12, answerNum: 3, viewNum: 100},
+]
+
+export const mockUsers: User[] =[
+  {_id:1, name: "Sujata | JS Mastery", nickname: "Sujata", profilePic: "", tags:[{_id: 2, title: "Reactjs"},{_id: 3, title: "Nextjs"}]},
+  {_id:2, name: "Sujata | JS Mastery", nickname: "Sujata", profilePic: "", tags:[{_id: 2, title: "Vite"}]},
+  {_id:3, name: "Sujata | JS Mastery", nickname: "Sujata", profilePic: "", tags:[]},
+  {_id:4, name: "Sujata | JS Mastery", nickname: "Sujata", profilePic: "", tags:[{_id: 2, title: "Vue"}]},
 ]

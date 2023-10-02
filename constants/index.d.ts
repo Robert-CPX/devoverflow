@@ -10,8 +10,11 @@ export type Tag = {
 }
 
 export type User = {
+  _id: number;
   name: string;
+  nickname: string;
   profilePic: string;
+  tags: Tag[];
 }
 
 export type Question = {

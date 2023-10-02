@@ -1,7 +1,7 @@
 import React from 'react'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
-import {HomeSearchBar} from '@/components/shared/SearchBar'
+import { LocalSearchBar } from '@/components/shared/SearchBar'
 import { questionTypes, mockQuestionData } from '@/constants/constants'
 import { LargerRenderTag } from '@/components/shared/RenderTag'
 import QuestionCard from '@/components/shared/QuestionCard'
@@ -17,7 +17,7 @@ import {
 const SearchSection = () => {
   return (
     <div className='flex gap-3 max-sm:flex-col'>
-      <HomeSearchBar />
+      <LocalSearchBar type='Question'/>
       <div className='md:hidden'>
         <Select>
           <SelectTrigger className="background-light800_darkgradient text-dark400_light900 light-border h-full min-h-[56px] w-[180px] max-sm:w-full">
