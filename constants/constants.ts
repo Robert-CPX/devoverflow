@@ -15,3 +15,17 @@ export const sidebarLinks: SidebarLink[] = [
   {imgURL: "/assets/icons/user.svg", route: "/profile", label: "Profile"},
   {imgURL: "/assets/icons/question.svg", route: "/ask-question", label: "Ask a question"},
 ]
+
+export const mockTopQuestions = [
+  {_id: 1, title:"Would it be appropriate to point out an error in another paper during a referee report paper during a referee report paper during a referee report paper during a referee report paper during a referee report paper during a referee report paper during a referee report ?", url: "https://bing.com"},
+  {_id: 2, title:"How can an airconditioning machine exis?", url: "https://bing.com"},
+  {_id: 3, title:"Interrogated every time crossing UK Border as citizen", url: "https://bing.com"},
+  {_id: 4, title:"Low digit addition generator?", url: "https://bing.com"},
+]
+
+export const mockPopularTags = [
+  {_id: 1, title:"Javascript", ranking: 5},
+  {_id: 2, title:"NEXJS", ranking: 23},
+  {_id: 3, title:"Tailwindcss", ranking: 2},
+  {_id: 4, title:"Machine learning", ranking: 35},
+]
