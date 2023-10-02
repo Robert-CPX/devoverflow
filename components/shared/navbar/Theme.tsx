@@ -24,7 +24,7 @@ const Theme = () => {
           ):(
             <Image src="assets/icons/sun.svg" width={20} height={20} alt='light theme' className='active-theme' />)}
         </MenubarTrigger>
-        <MenubarContent className='absolute right-[-3rem] mt-3 min-w-[120px] py-2 dark:border-dark-400 dark:bg-dark-300'>
+        <MenubarContent className='absolute right-[-3rem] mt-3 min-w-[120px] bg-light-900 py-2 dark:border-dark-400 dark:bg-dark-300'>
           {themes.map((item) => (
             <MenubarItem key={item.value} className='flex items-center gap-4 px-2.5 py-2 focus:bg-light-800 dark:focus:bg-dark-400' onClick={() => {
               if(item.value !== "system") {

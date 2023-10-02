@@ -76,7 +76,7 @@ body {
 }
 
 .primary-text-gradient {
-  background: linear-gradient(129deg, #ff7000 0%, #e2995f 100%);
+  background: var(--accent-gradient, linear-gradient(93deg, #FF7000 -13.95%, #E2995F 99.54%));
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;

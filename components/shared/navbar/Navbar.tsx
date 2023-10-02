@@ -3,6 +3,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { SignedIn, UserButton } from '@clerk/nextjs'
 import Theme from './Theme'
+import MobileNav from './MobileNav'
 const Navbar = () => {
   return (
     <nav className='flex-between background-light900_dark200 fixed z-50 w-full gap-5 p-6 shadow-light-300 dark:shadow-none sm:px-12'>
@@ -16,7 +17,7 @@ const Navbar = () => {
         <p className='h2-bold font-spaceGrotesk text-dark-100 dark:text-light-900 max-sm:hidden'>Dev <span className='text-primary-500'>Overflow</span></p>
       </Link>
       GlobalSearch
-      <div>
+      <div className='flex gap-2'>
         <Theme />
         <SignedIn>
           <UserButton
@@ -26,11 +27,12 @@ const Navbar = () => {
                 avatarBox: 'h-10 w-10'
               },
               variables: {
-                colorPrimary: '#ff7000'
+                colorPrimary: '#FF7000'
               }
             }}
           />
         </SignedIn>
+        <MobileNav />
       </div>
     </nav>
   )
