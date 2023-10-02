@@ -3,3 +3,24 @@ export type SidebarLink = {
   route: string;
   label: string;
 }
+
+export type Tag = {
+  _id: number;
+  title: string;
+}
+
+export type User = {
+  name: string;
+  profilePic: string;
+}
+
+export type Question = {
+  _id: number;
+  title: string;
+  tags:Tag[];
+  author: User;
+  createdAt: string
+  voteNum:number;
+  answerNum: number;
+  viewNum: number;
+}

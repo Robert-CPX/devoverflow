@@ -2,7 +2,7 @@ import React from 'react'
 import Image from 'next/image'
 import { mockPopularTags, mockTopQuestions } from '@/constants/constants'
 import Link from 'next/link';
-import RenderTag from './RenderTag';
+import { RenderTag } from './RenderTag';
 
 type TopQuestionsProp = {
   _id: number;

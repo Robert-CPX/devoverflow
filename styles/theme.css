@@ -19,6 +19,10 @@
     @apply bg-light-800 dark:dark-gradient;
   }
 
+  .background-light900_darkgradient {
+    @apply bg-light-900 dark:dark-gradient;
+  }
+
   .background-light800_dark400 {
     @apply bg-light-800 dark:bg-dark-400 !important;
   }
@@ -85,10 +89,6 @@
 
   .text-dark400_light900 {
     @apply text-dark-400 dark:text-light-900 !important;
-  }
-
-  .text-light400_light500 {
-    @apply text-light-400 dark:text-light-500 !important;
   }
 
   .light-border {

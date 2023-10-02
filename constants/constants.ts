@@ -1,4 +1,4 @@
-import { SidebarLink } from "."
+import { SidebarLink, Question } from "."
 
 export const themes = [
   {value: "light", label: "Light", icon: "/assets/icons/sun.svg"},
@@ -16,6 +16,13 @@ export const sidebarLinks: SidebarLink[] = [
   {imgURL: "/assets/icons/question.svg", route: "/ask-question", label: "Ask a question"},
 ]
 
+export const questionTypes = [
+  {_id: 0, title: "Newest"},
+  {_id: 1, title: "Recommended"},
+  {_id: 2, title: "Frequent"},
+  {_id: 3, title: "Unanswered"},
+]
+
 export const mockTopQuestions = [
   {_id: 1, title:"Would it be appropriate to point out an error in another paper during a referee report paper during a referee report paper during a referee report paper during a referee report paper during a referee report paper during a referee report paper during a referee report ?", url: "https://bing.com"},
   {_id: 2, title:"How can an airconditioning machine exis?", url: "https://bing.com"},
@@ -28,4 +35,11 @@ export const mockPopularTags = [
   {_id: 2, title:"NEXJS", ranking: 23},
   {_id: 3, title:"Tailwindcss", ranking: 2},
   {_id: 4, title:"Machine learning", ranking: 35},
+]
+
+export const mockQuestionData: Question[] = [
+  {_id: 1, title:"The Lightning Component c:LWC_PizzaTracker generated invalid output for field status. Error How to solve thisC_PizzaTracker generated invalid output for field status. Error How to solve this", tags:[{_id: 0, title: "Newest"}], author: {profilePic:"", name:"Sujata | JS Mastery"}, createdAt:"2021-08-01T00:00:00.000Z", voteNum:12, answerNum: 3, viewNum: 100},
+  {_id: 2, title:"The Lightning Component c:LWC_PizzaTracker generated invalid output for field status. Error How to solve this", tags:[{_id: 2, title: "ReactJs"}, {_id: 4, title: "Redux"}], author: {profilePic:"", name:"Sujata | JS Mastery"}, createdAt:"2021-08-01T00:00:00.000Z", voteNum:12, answerNum: 3, viewNum: 100},
+  {_id: 3, title:"The Lightning Component c:LWC_PizzaTracker generated invalid output for field status. Error How to solve this", tags:[{_id: 4, title: "Redux"},{_id: 9, title: "Vite"},{_id: 4, title: "Mongoose"}], author: {profilePic:"", name:"Sujata | JS Mastery"}, createdAt:"2021-08-01T00:00:00.000Z", voteNum:12, answerNum: 3, viewNum: 100},
+  {_id: 4, title:"The Lightning Component c:LWC_PizzaTracker generated invalid output for field status. Error How to solve this", tags:[{_id: 9, title: "JS"}], author: {profilePic:"", name:"Sujata | JS Mastery"}, createdAt:"2021-08-01T00:00:00.000Z", voteNum:12, answerNum: 3, viewNum: 100},
 ]

@@ -15,4 +15,12 @@ const RenderTag = ({_id, name}: RenderTagProps) => {
   )
 }
 
-export default RenderTag
+const LargerRenderTag = ({_id, name}: RenderTagProps) => {
+  return (
+    <Link href={`/tags/${_id}`} className='flex'>
+      <Badge className='text-light400_light500 body-medium background-light800_dark300 flex rounded-lg px-6 py-3'>{name}</Badge>
+    </Link>
+  )
+}
+
+export { RenderTag, LargerRenderTag }
