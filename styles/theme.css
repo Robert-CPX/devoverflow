@@ -55,6 +55,10 @@
     @apply text-dark-200 dark:text-light-800 !important;
   }
 
+  .text-dark300_light800 {
+    @apply text-dark-300 dark:text-light-800;
+  }
+
   .text-dark300_light700 {
     @apply text-dark-300 dark:text-light-700;
   }
