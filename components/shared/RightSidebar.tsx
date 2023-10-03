@@ -2,7 +2,7 @@ import React from 'react'
 import Image from 'next/image'
 import { mockPopularTags, mockTopQuestions } from '@/constants/constants'
 import Link from 'next/link';
-import { RenderTag } from './RenderTag';
+import RenderTag from './RenderTag';
 
 type TopQuestionsProp = {
   _id: number;
@@ -50,7 +50,7 @@ const PopularTags = ({
         {tags.map((item) => {
           return (
             <div key={item.title} className='flex h-[30px] w-full cursor-pointer items-center justify-between'>
-              <RenderTag _id={item._id} name={item.title} />
+              <RenderTag _id={item._id} name={item.title} customClassName="uppercase subtle-medium rounded-md px-4 py-2" />
               <p className='small-medium text-dark500_light700'>{item.ranking}</p>
             </div>
           )

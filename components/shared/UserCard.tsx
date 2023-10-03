@@ -1,7 +1,7 @@
 import React from 'react'
 import Image from 'next/image'
 import { User } from '@/constants/index'
-import { RenderTag } from './RenderTag'
+import RenderTag from './RenderTag'
 
 const UserCard = ({user}:{user:User}) => {
   return (
@@ -11,7 +11,7 @@ const UserCard = ({user}:{user:User}) => {
       <p className='body-regular text-dark500_light500'>{`@${user.nickname}`}</p>
       <div className='flex items-center justify-between gap-2'>
         {user.tags.map((tag) => (
-          <RenderTag key={tag.title} _id={tag._id} name={tag.title} />
+          <RenderTag key={tag.title} _id={tag._id} name={tag.title} customClassName="uppercase subtle-medium rounded-md px-4 py-2"/>
         ))}
       </div>
     </div>

@@ -3,7 +3,7 @@ import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { LocalSearchBar } from '@/components/shared/SearchBar'
 import { questionTypes, mockQuestionData } from '@/constants/constants'
-import { LargerRenderTag } from '@/components/shared/RenderTag'
+import RenderTag from '@/components/shared/RenderTag'
 import QuestionCard from '@/components/shared/QuestionCard'
 import {
   Select,
@@ -48,7 +48,7 @@ const Home = () => {
       <SearchSection />
       <div className='flex gap-3 max-md:hidden'>
         {questionTypes.map((type) => (
-          <LargerRenderTag key={type.title} _id={type._id} name={type.title} />
+          <RenderTag key={type.title} _id={type._id} name={type.title} customClassName="body-medium rounded-lg px-6 py-3"/>
         ))}
       </div>
       {mockQuestionData.map((question) => (

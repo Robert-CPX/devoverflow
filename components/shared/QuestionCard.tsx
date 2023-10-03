@@ -1,6 +1,6 @@
 import React from 'react'
 import { Question } from '@/constants/index'
-import { RenderTag } from './RenderTag'
+import RenderTag from './RenderTag'
 import Image from 'next/image'
 
 const DataItem = ({icon, number, unit}:{icon:string,number:number,unit:string}) => {
@@ -22,7 +22,7 @@ const QuestionCard = ({
       <h3 className='h3-semibold text-dark200_light900 max-h-[50px] overflow-hidden'>{question.title}</h3>
       <div className='flex gap-2'>
         {question.tags.map((tag) => (
-          <RenderTag key={tag._id} _id={tag._id} name={tag.title} />
+          <RenderTag key={tag._id} _id={tag._id} name={tag.title} customClassName="uppercase subtle-medium rounded-md px-4 py-2" />
         ))}
       </div>
       <div className="mt-3 flex justify-between gap-2 max-[500px]:flex-col">
