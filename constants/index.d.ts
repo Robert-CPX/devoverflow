@@ -22,7 +22,7 @@ export type Question = {
   title: string;
   tags:Tag[];
   author: User;
-  createdAt: string
+  createdAt: Date;
   voteNum:number;
   answerNum: number;
   viewNum: number;

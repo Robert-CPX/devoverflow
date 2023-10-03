@@ -17,6 +17,3 @@ const RenderTag = ({_id, name, customClassName}: RenderTagProps) => {
 }
 
 export default RenderTag
-
-// uppercase subtle-medium rounded-md px-4 py-2
-// body-medium rounded-lg px-6 py-3

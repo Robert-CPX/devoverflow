@@ -2,36 +2,33 @@ import React from 'react'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { LocalSearchBar } from '@/components/shared/SearchBar'
-import { questionTypes, mockQuestionData } from '@/constants/constants'
-import RenderTag from '@/components/shared/RenderTag'
-import QuestionCard from '@/components/shared/QuestionCard'
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
+import { mockQuestionData } from '@/constants/constants'
+import QuestionCard from '@/components/shared/cards/QuestionCard'
+import Filter from '@/components/shared/Filter'
+import { HomePageFilters } from '@/constants/filter'
+import NoResult from '@/components/shared/NoResult'
 
 const SearchSection = () => {
   return (
     <div className='flex gap-3 max-sm:flex-col'>
       <LocalSearchBar type='Question'/>
       <div className='md:hidden'>
-        <Select>
-          <SelectTrigger className="background-light800_darkgradient text-dark400_light900 light-border h-full min-h-[56px] w-[180px] max-sm:w-full">
-            <SelectValue placeholder="Select a Filter" />
-          </SelectTrigger>
-          <SelectContent className='background-light900_dark200 text-dark400_light900 light-border'>
-            <SelectGroup>
-              {questionTypes.map((type) => (
-                <SelectItem className='hover:background-light800_dark300' key={type.title} value={`${type._id}`}>{type.title}</SelectItem>
-              ))}
-            </SelectGroup>
-          </SelectContent>
-        </Select>
+        <Filter filters={HomePageFilters}/>
       </div>
+    </div>
+  )
+}
+
+const HomeFilter = () => {
+  const active = ''
+
+  return (
+    <div className='flex gap-3 max-md:hidden'>
+      {HomePageFilters.map((filter) => (
+        <Button key={filter.value} className={`body-medium rounded-lg px-6 py-3 capitalize shadow-none dark:bg-dark-300 ${active === filter.value ? " bg-primary-100 text-primary-500" : "bg-light-800 text-light-500"}`}>
+          {filter.name}
+        </Button>
+      ))}
     </div>
   )
 }
@@ -46,14 +43,16 @@ const Home = () => {
         </Link>
       </div>
       <SearchSection />
-      <div className='flex gap-3 max-md:hidden'>
-        {questionTypes.map((type) => (
-          <RenderTag key={type.title} _id={type._id} name={type.title} customClassName="body-medium rounded-lg px-6 py-3"/>
-        ))}
-      </div>
-      {mockQuestionData.map((question) => (
-        <QuestionCard key={question._id} question={question} />
-      ))}
+      <HomeFilter />
+      {mockQuestionData.length > 0 ? (
+        mockQuestionData.map((question) => (
+          <QuestionCard key={question._id} question={question} />
+        ))
+      ):(
+        <div className='flex justify-center'>
+          <NoResult />
+        </div> 
+      )}
     </section>
   )
 }
