@@ -5,7 +5,7 @@ export type SidebarLink = {
 }
 
 export type Tag = {
-  _id: number;
+  _id: string;
   title: string;
 }
 
@@ -20,10 +20,10 @@ export type User = {
 export type Question = {
   _id: number;
   title: string;
-  tags:Tag[];
+  tags: Tag[];
   author: User;
   createdAt: Date;
-  voteNum:number;
+  voteNum: number;
   answerNum: number;
   viewNum: number;
 }
