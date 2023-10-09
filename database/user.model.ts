@@ -1,4 +1,19 @@
-import { Schema, model, models } from 'mongoose'
+import { Schema, model, models, Document } from 'mongoose'
+
+export type User = {
+  clerkId: string;
+  name: string;
+  username: string;
+  email: string;
+  password?: string;
+  bio?: string;
+  picture: string;
+  location?: string;
+  profileLink?: string;
+  reputation?: number;
+  saved: Schema.Types.ObjectId[];
+  joinedAt: Date;
+} | Document
 
 const UserSchema = new Schema({
   clerkId: { type: String, required: true },
@@ -15,6 +30,6 @@ const UserSchema = new Schema({
   joinedAt: { type: Date, default: Date.now },
 })
 
-const User = models.User || model('User', UserSchema)
+const UserDocument = models.User || model('User', UserSchema)
 
-export default User
+export default UserDocument

@@ -1,6 +1,6 @@
 import Question from '@/components/shared/forms/Question'
 import { getUsereById } from '@/lib/actions/user.action'
-import { auth } from '@clerk/nextjs'
+// import { auth } from '@clerk/nextjs'
 import { redirect } from 'next/navigation'
 import React from 'react'
 
@@ -9,7 +9,7 @@ const Page = async () => {
   const userId = '12345678'
   if (!userId) redirect('/sign-in')
 
-  const mongoUser = await getUsereById(userId)
+  const mongoUser = await getUsereById({ userId })
 
   console.log(mongoUser)
 

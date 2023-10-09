@@ -1,4 +1,12 @@
-import { Schema, model, models } from 'mongoose'
+import { Schema, model, models, Document } from 'mongoose'
+
+export type Tag = {
+  name: string;
+  description: string;
+  questions: Schema.Types.ObjectId[];
+  followers: Schema.Types.ObjectId[];
+  createdAt: Date;
+} | Document
 
 const TagSchema = new Schema({
   name: { type: String, required: true, unique: true },
@@ -8,6 +16,6 @@ const TagSchema = new Schema({
   createdAt: { type: Date, default: Date.now },
 })
 
-const Tag = models.Tag || model('Tag', TagSchema)
+const TagDocument = models.Tag || model('Tag', TagSchema)
 
-export default Tag
+export default TagDocument

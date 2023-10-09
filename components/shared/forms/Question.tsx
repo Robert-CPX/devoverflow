@@ -48,6 +48,7 @@ const QuestionForm = ({ mongoUserId }: { mongoUserId: string }) => {
         content: values.detail,
         tags: values.tags,
         author: JSON.parse(mongoUserId),
+        path: pathname
       })
       router.push('/');
     } catch (error) {

@@ -2,18 +2,19 @@ import React from 'react'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { LocalSearchBar } from '@/components/shared/SearchBar'
-import { mockQuestionData } from '@/constants/constants'
 import QuestionCard from '@/components/shared/cards/QuestionCard'
 import Filter from '@/components/shared/Filter'
 import { HomePageFilters } from '@/constants/filter'
 import NoResult from '@/components/shared/NoResult'
+import { getQuestions } from '@/lib/actions/question.action'
+// import Pagination from '@/components/shared/Pagination'
 
 const SearchSection = () => {
   return (
     <div className='flex gap-3 max-sm:flex-col'>
-      <LocalSearchBar type='Question'/>
+      <LocalSearchBar type='Question' />
       <div className='md:hidden'>
-        <Filter filters={HomePageFilters}/>
+        <Filter filters={HomePageFilters} />
       </div>
     </div>
   )
@@ -33,7 +34,9 @@ const HomeFilter = () => {
   )
 }
 
-const Home = () => {
+const Home = async () => {
+
+  const result = await getQuestions({})
   return (
     <section className='flex flex-col gap-8'>
       <div className='flex justify-between'>
@@ -44,15 +47,26 @@ const Home = () => {
       </div>
       <SearchSection />
       <HomeFilter />
-      {mockQuestionData.length > 0 ? (
-        mockQuestionData.map((question) => (
-          <QuestionCard key={question._id} question={question} />
+      {result.questions.length > 0 ? (
+        result.questions.map((question) => (
+          <QuestionCard
+            key={question._id}
+            _id={question._id}
+            title={question.title}
+            tags={question.tags}
+            author={question.author}
+            upvotes={question.upvotes}
+            views={question.views}
+            answers={question.answers}
+            createdAt={question.createdAt}
+          />
         ))
-      ):(
+      ) : (
         <div className='flex justify-center'>
           <NoResult />
-        </div> 
+        </div>
       )}
+      {/* <Pagination /> */}
     </section>
   )
 }

@@ -1,12 +1,13 @@
 'use server'
 
-import User from "@/database/user.model"
+import UserDocument from "@/database/user.model"
 import { connectToDatabase } from "../mongoose"
+import { GetUserByIdParams } from "./shared"
 
-export const getUsereById = async (id: string) => {
+export const getUsereById = async (param: GetUserByIdParams) => {
   try {
     connectToDatabase()
-    const user = await User.findOne({ clerkId: id })
+    const user = await UserDocument.findOne({ clerkId: param.userId })
     return user
   } catch (error) {
     console.log(error)

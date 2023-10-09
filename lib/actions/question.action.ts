@@ -1,15 +1,17 @@
 'use server'
 
 import { connectToDatabase } from "../mongoose"
-import Question from "@/database/question.model"
-import Tag from "@/database/tag.model";
+import QuestionDocument from "@/database/question.model"
+import TagDocument from "@/database/tag.model";
+import { CreateQuestionParams, GetQuestionsParams } from "./shared";
+import { revalidatePath } from "next/cache";
 
-export const createQuestion = async (param: any) => {
+export const createQuestion = async (param: CreateQuestionParams) => {
   try {
     connectToDatabase();
     const { title, content, tags, author, path } = param;
 
-    const question = await Question.create({
+    const question = await QuestionDocument.create({
       title,
       content,
       author,
@@ -18,7 +20,7 @@ export const createQuestion = async (param: any) => {
     const tagDocuments = [];
 
     for (const tag of tags) {
-      const existingTag = await Tag.findOneAndUpdate(
+      const existingTag = await TagDocument.findOneAndUpdate(
         { name: { $regex: new RegExp(`^${tag}$`, "i") } },
         { $setOnInsert: { name: tag }, $push: { questions: question._id } },
         { upsert: true, new: true }
@@ -26,10 +28,26 @@ export const createQuestion = async (param: any) => {
       tagDocuments.push(existingTag._id);
     }
 
-    await Question.findByIdAndUpdate(question._id, {
+    await QuestionDocument.findByIdAndUpdate(question._id, {
       $push: { tags: tagDocuments }
     });
+    revalidatePath(path);
   } catch (error) {
+    console.log(error)
+    throw error;
+  }
+}
 
+export const getQuestions = async (param: GetQuestionsParams) => {
+  try {
+    connectToDatabase();
+    const questions = await QuestionDocument.find({})
+      .populate("tags")
+      .populate("author")
+      .sort({ createdAt: -1 });
+    return { questions };
+  } catch (error) {
+    console.log(error)
+    throw error;
   }
 }
