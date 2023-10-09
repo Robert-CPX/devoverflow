@@ -11,8 +11,6 @@ const Page = async () => {
 
   const mongoUser = await getUsereById({ userId })
 
-  console.log(mongoUser)
-
   return (
     <section>
       <h1 className='h1-bold text-dark100_light900'>Ask a question</h1>
