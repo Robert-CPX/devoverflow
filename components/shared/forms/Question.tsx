@@ -20,12 +20,15 @@ import { QuestionsSchema } from '@/lib/validations'
 import Image from 'next/image'
 import { Badge } from '@/components/ui/badge'
 import { createQuestion } from '@/lib/actions/question.action';
+import { useRouter, usePathname } from 'next/navigation';
 
 const type = 'edit'
 
-const QuestionForm = () => {
+const QuestionForm = ({ mongoUserId }: { mongoUserId: string }) => {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const editorRef = useRef(null);
+  const router = useRouter()
+  const pathname = usePathname()
 
   // 1. Define your form.
   const form = useForm<z.infer<typeof QuestionsSchema>>({
@@ -33,15 +36,20 @@ const QuestionForm = () => {
     defaultValues: {
       title: "",
       detail: "",
-      tags: [],
+      tags: []
     },
   })
 
-  // 2. Define a submit handler.
   const onSubmit = async (values: z.infer<typeof QuestionsSchema>) => {
     setIsSubmitting(true)
     try {
-      await createQuestion()
+      await createQuestion({
+        title: values.title,
+        content: values.detail,
+        tags: values.tags,
+        author: JSON.parse(mongoUserId),
+      })
+      router.push('/');
     } catch (error) {
 
     } finally {
