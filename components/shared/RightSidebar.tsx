@@ -5,21 +5,21 @@ import Link from 'next/link';
 import RenderTag from './RenderTag';
 
 type TopQuestionsProp = {
-  _id: number;
+  _id: string;
   title: string;
   url: string;
 }
 
 type PopularTagsProp = {
-  _id: number;
+  _id: string;
   title: string;
   ranking: number;
 }
 
 const TopQuestions = ({
   questions
-}:{
-  questions:TopQuestionsProp[]
+}: {
+  questions: TopQuestionsProp[]
 }) => {
   return (
     <section className='flex w-full flex-col items-start gap-6'>
@@ -40,8 +40,8 @@ const TopQuestions = ({
 
 const PopularTags = ({
   tags
-}:{
-  tags:PopularTagsProp[]
+}: {
+  tags: PopularTagsProp[]
 }) => {
   return (
     <section className='relative flex w-full flex-col items-start gap-6'>
@@ -64,7 +64,7 @@ const RightSidebar = () => {
   return (
     <aside className='background-light900_dark200 light-border sticky right-0 top-0 flex h-screen w-[330px] flex-col items-start gap-16 border-l px-6 pb-8 pt-36 shadow-light-300 dark:shadow-none max-xl:hidden'>
       <TopQuestions questions={mockTopQuestions} />
-      <PopularTags tags={mockPopularTags}/>
+      <PopularTags tags={mockPopularTags} />
     </aside>
   )
 }
