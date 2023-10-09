@@ -1,5 +1,4 @@
 import React from 'react'
-import { Question } from '@/constants/index'
 import RenderTag from '../RenderTag'
 import Image from 'next/image'
 import Link from 'next/link'

@@ -1,4 +1,4 @@
-import { SidebarLink, Question, User } from "."
+import { SidebarLink } from "."
 
 export const themes = [
   { value: "light", label: "Light", icon: "/assets/icons/sun.svg" },
@@ -41,18 +41,4 @@ export const mockPopularTags = [
   { _id: "2", title: "NEXJS", ranking: 23 },
   { _id: "3", title: "Tailwindcss", ranking: 2 },
   { _id: "4", title: "Machine learning", ranking: 35 },
-]
-
-export const mockQuestionData: Question[] = [
-  { _id: 1, title: "The Lightning Component c:LWC_PizzaTracker generated invalid output for field status. Error How to solve thisC_PizzaTracker generated invalid output for field status. Error How to solve this", tags: [{ _id: 0, title: "Newest" }], author: { _id: 0, profilePic: "", name: "Sujata | JS Mastery", nickname: "", tags: [] }, createdAt: new Date("2023-10-03T00:00:00.000Z"), voteNum: 12, answerNum: 3, viewNum: 100 },
-  { _id: 2, title: "The Lightning Component c:LWC_PizzaTracker generated invalid output for field status. Error How to solve this", tags: [{ _id: 2, title: "ReactJs" }, { _id: 4, title: "Redux" }], author: { _id: 0, profilePic: "", name: "Sujata | JS Mastery", nickname: "", tags: [] }, createdAt: new Date("2023-10-01T00:00:00.000Z"), voteNum: 12, answerNum: 3, viewNum: 100 },
-  { _id: 3, title: "The Lightning Component c:LWC_PizzaTracker generated invalid output for field status. Error How to solve this", tags: [{ _id: 4, title: "Redux" }, { _id: 9, title: "Vite" }, { _id: 4, title: "Mongoose" }], author: { _id: 0, profilePic: "", name: "Sujata | JS Mastery", nickname: "", tags: [] }, createdAt: new Date("2023-09-01T00:00:00.000Z"), voteNum: 12, answerNum: 3, viewNum: 100 },
-  { _id: 4, title: "The Lightning Component c:LWC_PizzaTracker generated invalid output for field status. Error How to solve this", tags: [{ _id: 9, title: "JS" }], author: { _id: 0, profilePic: "", name: "Sujata | JS Mastery", nickname: "", tags: [] }, createdAt: new Date("2021-08-01T00:00:00.000Z"), voteNum: 12, answerNum: 3, viewNum: 100 },
-]
-
-export const mockUsers: User[] = [
-  { _id: 1, name: "Sujata | JS Mastery", nickname: "Sujata", profilePic: "", tags: [{ _id: 2, title: "Reactjs" }, { _id: 3, title: "Nextjs" }] },
-  { _id: 2, name: "Sujata | JS Mastery", nickname: "Sujata", profilePic: "", tags: [{ _id: 2, title: "Vite" }] },
-  { _id: 3, name: "Sujata | JS Mastery", nickname: "Sujata", profilePic: "", tags: [] },
-  { _id: 4, name: "Sujata | JS Mastery", nickname: "Sujata", profilePic: "", tags: [{ _id: 2, title: "Vue" }] },
 ]

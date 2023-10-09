@@ -5,8 +5,6 @@ import { connectToDatabase } from "../mongoose"
 import { CreateUserParams, DeleteUserParams, GetUserByIdParams, UpdateUserParams } from "./shared"
 import { revalidatePath } from "next/cache"
 import QuestionDocument from "@/database/question.model"
-import AnswerDocument from "@/database/answer.model"
-import TagDocument from "@/database/tag.model"
 
 export const getUsereById = async (params: GetUserByIdParams) => {
   try {
@@ -56,7 +54,7 @@ export const deleteUser = async (params: DeleteUserParams) => {
       throw new Error('User not found')
     }
 
-    const userQuestionIds = await QuestionDocument.find({ author: deletedUser._id }).distinct('_id')
+    // const userQuestionIds = await QuestionDocument.find({ author: deletedUser._id }).distinct('_id')
     await QuestionDocument.deleteMany({ author: deletedUser._id })
 
     return deletedUser
