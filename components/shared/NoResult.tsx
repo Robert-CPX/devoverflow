@@ -1,8 +1,20 @@
 import React from 'react'
-import { Button } from '../ui/button'
 import Image from 'next/image'
+import Link from 'next/link';
 
-const NoResult = () => {
+type NoResultProps = {
+  title: string;
+  description: string;
+  link: string;
+  linkText: string;
+}
+
+const NoResult = ({
+  title,
+  description,
+  link,
+  linkText
+}: NoResultProps) => {
   return (
     <div className='flex-center mt-12 flex-col gap-7'>
       <Image
@@ -20,9 +32,11 @@ const NoResult = () => {
         className='hidden object-contain dark:flex'
       />
       <div className='flex-center flex-col gap-3'>
-        <h2 className='h2-bold text-dark200_light900'>There&apos;s no question to show</h2>
-        <p className='body-regular text-dark500_light700 max-w-md text-center'>Be the first to break the silence! 🚀 Ask a Question and kickstart the discussion. our query could be the next big thing others learn from. Get involved! 💡</p>
-        <Button className='paragraph-medium primary-gradient w-[173px] rounded-lg px-4 py-3 text-light-900'>Ask a Question</Button>
+        <h2 className='h2-bold text-dark200_light900'>{title}</h2>
+        <p className='body-regular text-dark500_light700 max-w-md text-center'>{description}</p>
+        <Link href={link}>
+          <p className='paragraph-medium primary-gradient w-[173px] rounded-lg px-4 py-3 text-center text-light-900'>{linkText}</p>
+        </Link>
       </div>
     </div>
   )

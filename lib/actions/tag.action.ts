@@ -2,9 +2,23 @@
 
 import TagDocument from "@/database/tag.model"
 import { connectToDatabase } from "../mongoose"
-import { GetTopInteractedTagsParams } from "./shared"
+import { GetAllTagsParams, GetTopInteractedTagsParams } from "./shared"
 import { TagsSchema } from "../validations"
-import { ObjectId } from 'mongodb'
+
+export const getAllTags = async (params: GetAllTagsParams) => {
+  try {
+    connectToDatabase()
+    const allTags: unknown = await TagDocument.find({})
+    const parsedAllTags = TagsSchema.parse(allTags)
+    if (!parsedAllTags) {
+      throw new Error('Tags not found')
+    }
+    return parsedAllTags
+  } catch (error) {
+    console.log(error)
+    throw error
+  }
+}
 
 export const getTopInteractedTags = async (params: GetTopInteractedTagsParams) => {
   try {

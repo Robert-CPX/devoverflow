@@ -7,7 +7,7 @@ import { Input } from '@/components/ui/input'
 const GlobalSearchBar = () => {
   return (
     <div className='background-light800_darkgradient relative flex min-h-[56px] w-full max-w-[600px] items-center justify-start gap-1 rounded-lg px-4 max-lg:hidden'>
-      <Image 
+      <Image
         src="./assets/icons/search.svg"
         width={23}
         height={23}
@@ -15,7 +15,7 @@ const GlobalSearchBar = () => {
       />
       <Input
         type='text'
-        onChange={() =>{}}
+        onChange={() => { }}
         className='text-dark400_light900 no-focus placeholder paragraph-regular border-none bg-transparent outline-none'
         placeholder='Search anything globally...'
       />
@@ -23,12 +23,12 @@ const GlobalSearchBar = () => {
   )
 }
 
-type LocalSearchType = "Question" | "User"
+type LocalSearchType = "Question" | "User" | "Tag"
 
-const LocalSearchBar = ({type}:{type:LocalSearchType}) => {
+const LocalSearchBar = ({ type }: { type: LocalSearchType }) => {
   return (
     <div className='background-light800_darkgradient relative flex min-h-[56px] w-full items-center justify-start gap-1 rounded-lg px-4'>
-      <Image 
+      <Image
         src="./assets/icons/search.svg"
         width={23}
         height={23}
@@ -36,9 +36,9 @@ const LocalSearchBar = ({type}:{type:LocalSearchType}) => {
       />
       <Input
         type='text'
-        onChange={() =>{}}
+        onChange={() => { }}
         className='text-dark400_light900 no-focus placeholder paragraph-regular border-none bg-transparent outline-none'
-        placeholder={`${type === "Question" ? "Search questions..." : "Search amazing minds here..."}`}
+        placeholder={`${type === "Question" ? "Search questions..." : type === "User" ? "Search amazing minds here..." : "Search by tag name..."}`}
       />
     </div>
   )

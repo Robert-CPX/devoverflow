@@ -63,7 +63,12 @@ const Home = async () => {
         ))
       ) : (
         <div className='flex justify-center'>
-          <NoResult />
+          <NoResult
+            title='There&apos;s no question to show'
+            description='Be the first to break the silence! 🚀 Ask a Question and kickstart the discussion. our query could be the next big thing others learn from. Get involved! 💡'
+            link='/ask-question'
+            linkText='Ask a Question'
+          />
         </div>
       )}
       {/* <Pagination /> */}
