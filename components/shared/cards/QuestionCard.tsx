@@ -53,7 +53,7 @@ const QuestionCard = ({
       {/* TODO: fix this */}
       <div className="mt-3 flex justify-between gap-2 max-[500px]:flex-col">
         <Link href="/" className='flex justify-start gap-1'>
-          <Image src={'/assets/icons/avatar.svg'} alt="profile pic" width={20} height={20} className='rounded-full' />
+          <Image src={author.picture} alt="profile pic" width={20} height={20} className='rounded-full' />
           <p className='text-dark400_light800 body-medium line-clamp-1'>{author.name}<span className='text-dark400_light800 small-regular max-sm:hidden'> {`• ${getTimeStamp(createdAt)}`}</span></p>
         </Link>
         <div className='flex gap-2'>
