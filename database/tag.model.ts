@@ -5,6 +5,7 @@ export type Tag = {
   description: string;
   questions: Schema.Types.ObjectId[];
   followers: Schema.Types.ObjectId[];
+  creator: Schema.Types.ObjectId;
   createdAt: Date;
 } | Document
 
@@ -13,6 +14,7 @@ const TagSchema = new Schema({
   description: { type: String, required: true },
   questions: [{ type: Schema.Types.ObjectId, ref: 'Question' }],
   followers: [{ type: Schema.Types.ObjectId, ref: 'User' }],
+  creator: { type: Schema.Types.ObjectId, ref: 'User', required: true },
   createdAt: { type: Date, default: Date.now },
 })
 

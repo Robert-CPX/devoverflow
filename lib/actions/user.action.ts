@@ -2,9 +2,10 @@
 
 import UserDocument from "@/database/user.model"
 import { connectToDatabase } from "../mongoose"
-import { CreateUserParams, DeleteUserParams, GetUserByIdParams, UpdateUserParams } from "./shared"
+import { CreateUserParams, DeleteUserParams, GetAllUsersParams, GetUserByIdParams, UpdateUserParams } from "./shared"
 import { revalidatePath } from "next/cache"
 import QuestionDocument from "@/database/question.model"
+import { UsersSchema } from "../validations"
 
 export const getUsereById = async (params: GetUserByIdParams) => {
   try {
@@ -58,6 +59,22 @@ export const deleteUser = async (params: DeleteUserParams) => {
     await QuestionDocument.deleteMany({ author: deletedUser._id })
 
     return deletedUser
+  } catch (error) {
+    console.log(error)
+    throw error
+  }
+}
+
+export const getAllUsers = async (params: GetAllUsersParams) => {
+  try {
+    connectToDatabase()
+    const allUsers: unknown = await UserDocument.find({})
+      .sort({ createdAt: -1 });
+    const parsedAllUsers = UsersSchema.safeParse(allUsers)
+    if (!parsedAllUsers.success) {
+      throw new Error('Error parsing all users')
+    }
+    return { parsedAllUsers };
   } catch (error) {
     console.log(error)
     throw error

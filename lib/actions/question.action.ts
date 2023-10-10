@@ -1,8 +1,8 @@
 'use server'
 
 import { connectToDatabase } from "../mongoose"
-import QuestionDocument from "@/database/question.model"
 import TagDocument from "@/database/tag.model";
+import QuestionDocument from "@/database/question.model"
 import { CreateQuestionParams, GetQuestionsParams } from "./shared";
 import { revalidatePath } from "next/cache";
 
@@ -22,7 +22,7 @@ export const createQuestion = async (param: CreateQuestionParams) => {
     for (const tag of tags) {
       const existingTag = await TagDocument.findOneAndUpdate(
         { name: { $regex: new RegExp(`^${tag}$`, "i") } },
-        { $setOnInsert: { name: tag }, $push: { questions: question._id } },
+        { $setOnInsert: { name: tag, creator: author }, $push: { questions: question._id } },
         { upsert: true, new: true }
       )
       tagDocuments.push(existingTag._id);
