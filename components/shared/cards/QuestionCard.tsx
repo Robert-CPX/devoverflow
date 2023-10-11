@@ -44,7 +44,9 @@ const QuestionCard = ({
   return (
     <div className="background-light900_darkgradient shadow-light100_dark100 flex w-full flex-col gap-3 rounded-lg px-11 py-9">
       <p className='text-dark400_light800 small-regular sm:hidden'>{`${getTimeStamp(createdAt)}`}</p>
-      <h3 className='h3-semibold text-dark200_light900 line-clamp-2 max-h-[50px]'>{title}</h3>
+      <Link href={`/question/${_id}`}>
+        <h3 className='h3-semibold text-dark200_light900 line-clamp-2 max-h-[50px]'>{title}</h3>
+      </Link>
       <div className='flex gap-2'>
         {tags.map((tag) => (
           <RenderTag key={tag._id} _id={tag._id} name={tag.name} customClassName="uppercase subtle-medium rounded-md px-4 py-2" />
@@ -52,7 +54,7 @@ const QuestionCard = ({
       </div>
       {/* TODO: fix this */}
       <div className="mt-3 flex justify-between gap-2 max-[500px]:flex-col">
-        <Link href="/" className='flex justify-start gap-1'>
+        <Link href={`/profile/${author._id}`} className='flex justify-start gap-1'>
           <Image src={author.picture} alt="profile pic" width={20} height={20} className='rounded-full' />
           <p className='text-dark400_light800 body-medium line-clamp-1'>{author.name}<span className='text-dark400_light800 small-regular max-sm:hidden'> {`• ${getTimeStamp(createdAt)}`}</span></p>
         </Link>

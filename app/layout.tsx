@@ -1,5 +1,6 @@
 import React from 'react'
 import '../styles/global.css'
+import '../styles/prism.css'
 // eslint-disable-next-line camelcase
 import { Inter, Space_Grotesk } from 'next/font/google'
 import type { Metadata } from 'next'

@@ -1,7 +1,7 @@
 import * as z from "zod"
 import mongoose, { Schema } from 'mongoose'
 
-export const QuestionsSchema = z.object({
+export const QuestionFormSchema = z.object({
   title: z.string().min(3).max(130),
   detail: z.string().nonempty(),
   tags: z.array(z.string().min(1).max(15)).min(1).max(3),
@@ -36,3 +36,22 @@ const TagSchema = z.object({
 })
 
 export const TagsSchema = z.array(TagSchema)
+
+export const AnswerSchema = z.object({
+  content: z.string().nonempty(),
+  upvotes: z.number(),
+  downvotes: z.number(),
+  author: UsersSchema,
+  createdAt: z.date(),
+})
+
+export const QuestionSchema = z.object({
+  _id: z.custom<mongoose.ObjectId>(),
+  title: z.string().min(3).max(130),
+  content: z.string().nonempty(),
+  tags: z.custom<{ _id: string, name: string }>().array(),
+  views: z.number(),
+  author: z.custom<{ _id: string, clerkId: string, name: string, picture: string }>(),
+  answers: AnswerSchema.array(),
+  createdAt: z.date(),
+})

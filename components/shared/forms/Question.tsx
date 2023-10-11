@@ -16,7 +16,7 @@ import {
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Editor } from "@tinymce/tinymce-react"
-import { QuestionsSchema } from '@/lib/validations'
+import { QuestionFormSchema } from '@/lib/validations'
 import Image from 'next/image'
 import { Badge } from '@/components/ui/badge'
 import { createQuestion } from '@/lib/actions/question.action';
@@ -31,8 +31,8 @@ const QuestionForm = ({ mongoUserId }: { mongoUserId: string }) => {
   const pathname = usePathname()
 
   // 1. Define your form.
-  const form = useForm<z.infer<typeof QuestionsSchema>>({
-    resolver: zodResolver(QuestionsSchema),
+  const form = useForm<z.infer<typeof QuestionFormSchema>>({
+    resolver: zodResolver(QuestionFormSchema),
     defaultValues: {
       title: "",
       detail: "",
@@ -40,7 +40,7 @@ const QuestionForm = ({ mongoUserId }: { mongoUserId: string }) => {
     },
   })
 
-  const onSubmit = async (values: z.infer<typeof QuestionsSchema>) => {
+  const onSubmit = async (values: z.infer<typeof QuestionFormSchema>) => {
     setIsSubmitting(true)
     try {
       await createQuestion({

@@ -8,7 +8,7 @@ const GlobalSearchBar = () => {
   return (
     <div className='background-light800_darkgradient relative flex min-h-[56px] w-full max-w-[600px] items-center justify-start gap-1 rounded-lg px-4 max-lg:hidden'>
       <Image
-        src="./assets/icons/search.svg"
+        src="/assets/icons/search.svg"
         width={23}
         height={23}
         alt='search'
@@ -29,7 +29,7 @@ const LocalSearchBar = ({ type }: { type: LocalSearchType }) => {
   return (
     <div className='background-light800_darkgradient relative flex min-h-[56px] w-full items-center justify-start gap-1 rounded-lg px-4'>
       <Image
-        src="./assets/icons/search.svg"
+        src="/assets/icons/search.svg"
         width={23}
         height={23}
         alt='search'

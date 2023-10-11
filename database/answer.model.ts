@@ -1,5 +1,13 @@
 import { Schema, model, models } from 'mongoose'
 
+export type Answer = {
+  content: string;
+  upvotes: number;
+  downvotes: number;
+  author: Schema.Types.ObjectId[];
+  createdAt: Date;
+} | Document;
+
 const AnswerSchema = new Schema({
   content: { type: String, required: true },
   upvotes: { type: Number, default: 0 },
