@@ -7,6 +7,10 @@ export const QuestionFormSchema = z.object({
   tags: z.array(z.string().min(1).max(15)).min(1).max(3),
 })
 
+export const AnswerFormSchema = z.object({
+  answer: z.string().nonempty(),
+})
+
 const UserSchema = z.object({
   _id: z.custom<mongoose.ObjectId>(),
   clerkId: z.string(),
@@ -39,8 +43,8 @@ export const TagsSchema = z.array(TagSchema)
 
 export const AnswerSchema = z.object({
   content: z.string().nonempty(),
-  upvotes: z.number(),
-  downvotes: z.number(),
+  upvotes: UsersSchema.array(),
+  downvotes: UsersSchema.array(),
   author: UsersSchema,
   createdAt: z.date(),
 })

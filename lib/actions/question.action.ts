@@ -47,6 +47,7 @@ export const getQuestions = async (param: GetQuestionsParams) => {
     const questions = await QuestionDocument.find({})
       .populate("tags")
       .populate("author")
+      .populate({ path: 'answers', select: "content author createdAt ", options: { sort: { createdAt: -1 } } })
       .sort({ createdAt: -1 });
     return { questions };
   } catch (error) {

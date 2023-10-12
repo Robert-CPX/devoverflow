@@ -8,6 +8,8 @@ import ParseHTML from '@/components/shared/ParseHTML'
 import RenderTag from '@/components/shared/RenderTag'
 import Filter from '@/components/shared/Filter'
 import { AnswerFilters } from '@/constants/filter'
+import AnswerForm from '@/components/shared/forms/Answer'
+import { auth } from '@clerk/nextjs'
 
 const Towards = ({
   upvoted, downvoted, collected
@@ -36,19 +38,19 @@ const Towards = ({
 const Influence = ({ asked, answers, views, votes }: { asked: string, answers: number, views: number, votes: number }) => (
   <div className='flex justify-start gap-4'>
     <div className='flex gap-1'>
-      <Image src="/assets/icons/clock.svg" alt='clock icon' width={14} height={14} />
+      <Image className='object-contain' src="/assets/icons/clock.svg" alt='clock icon' width={14} height={14} />
       <p className='small-regular text-dark400_light700'>{`Asked ${asked}`}</p>
     </div>
     <div className={`flex gap-1 ${votes === 0 ?? 'hidden'}`}>
-      <Image src="/assets/icons/like.svg" alt='like icon' width={16} height={16} />
+      <Image className='object-contain' src="/assets/icons/like.svg" alt='like icon' width={16} height={16} />
       <p className='small-regular text-dark400_light700'>{`${votes} Votes`}</p>
     </div>
     <div className={`flex gap-1 ${answers === 0 ?? 'hidden'}`}>
-      <Image src="/assets/icons/message.svg" alt='message icon' width={16} height={16} />
+      <Image className='object-contain' src="/assets/icons/message.svg" alt='message icon' width={16} height={16} />
       <p className='small-regular text-dark400_light700'>{`${answers} Answers`}</p>
     </div>
     <div className={`flex gap-1 ${views === 0 ?? 'hidden'}`}>
-      <Image src="/assets/icons/eye.svg" alt='eye icon' width={16} height={16} />
+      <Image className='object-contain' src="/assets/icons/eye.svg" alt='eye icon' width={16} height={16} />
       <p className='small-regular text-dark400_light700'>{`${views} Views`}</p>
     </div>
   </div>
@@ -56,9 +58,9 @@ const Influence = ({ asked, answers, views, votes }: { asked: string, answers: n
 
 const Page = async ({ params }: { params: { id: string } }) => {
   const question = await getQuestionById({ questionId: params.id })
-
+  const { userId } = auth()
   return (
-    <article className='flex w-full flex-col justify-start gap-[16px]'>
+    <article className='flex flex-col justify-start gap-[16px]'>
       <div className='mt-3 flex justify-between'>
         <Link href={`/profile/${question.author._id}`} className='flex-center gap-1'>
           <Image src={question.author.picture} alt="profile" width={22} height={22} className='rounded-full' />
@@ -78,6 +80,7 @@ const Page = async ({ params }: { params: { id: string } }) => {
         <p className='paragraph-medium primary-text-gradient'>{`${question.answers.length} Answers`}</p>
         <Filter filters={AnswerFilters} />
       </div>
+      <AnswerForm questionId={question._id.toString()} userId={userId} />
     </article>
   )
 }

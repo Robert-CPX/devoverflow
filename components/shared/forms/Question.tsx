@@ -21,10 +21,12 @@ import Image from 'next/image'
 import { Badge } from '@/components/ui/badge'
 import { createQuestion } from '@/lib/actions/question.action';
 import { useRouter, usePathname } from 'next/navigation';
+import { useTheme } from '@/context/ThemeProvider';
 
 const type = 'edit'
 
 const QuestionForm = ({ mongoUserId }: { mongoUserId: string }) => {
+  const { theme } = useTheme()
   const [isSubmitting, setIsSubmitting] = useState(false)
   const editorRef = useRef(null);
   const router = useRouter()
@@ -135,6 +137,8 @@ const QuestionForm = ({ mongoUserId }: { mongoUserId: string }) => {
                       'codesample | bold italic forecolor | alignleft aligncenter ' +
                       'alignright alignjustify | bullist numlist',
                     content_style: 'body { font-family:Inter; font-size:16px;}',
+                    skin: theme === 'dark' ? 'oxide-dark' : 'oxide',
+                    content_css: theme === 'dark' ? 'dark' : 'light',
                   }}
                 />
               </FormControl>
