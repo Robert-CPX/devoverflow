@@ -42,12 +42,15 @@ const TagSchema = z.object({
 export const TagsSchema = z.array(TagSchema)
 
 export const AnswerSchema = z.object({
+  _id: z.custom<mongoose.ObjectId>(),
   content: z.string().nonempty(),
-  upvotes: UsersSchema.array(),
-  downvotes: UsersSchema.array(),
-  author: UsersSchema,
+  upvotes: z.custom<mongoose.ObjectId>().array(),
+  downvotes: z.custom<mongoose.ObjectId>().array(),
+  author: z.custom<{ _id: string, clerkId: string, name: string, picture: string }>(),
   createdAt: z.date(),
 })
+
+export const AnswerListSchema = z.array(AnswerSchema)
 
 export const QuestionSchema = z.object({
   _id: z.custom<mongoose.ObjectId>(),
