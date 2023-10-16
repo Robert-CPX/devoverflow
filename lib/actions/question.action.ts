@@ -4,7 +4,7 @@ import { connectToDatabase } from "../mongoose"
 import TagDocument from "@/database/tag.model";
 import QuestionDocument from "@/database/question.model"
 import AnswerDocument from "@/database/answer.model";
-import { CreateQuestionParams, GetQuestionByIdParams, GetQuestionsParams, ToggleSaveQuestionParams, QuestionVoteParams } from "./shared";
+import { CreateQuestionParams, GetQuestionByIdParams, GetQuestionsParams, QuestionVoteParams } from "./shared";
 import { revalidatePath } from "next/cache";
 import { QuestionSchema, QuestionListSchema } from "../validations";
 
@@ -134,26 +134,6 @@ export const downvoteQuestion = async (param: QuestionVoteParams) => {
       questionId,
       updateQuery,
       { new: true }
-    )
-    if (!question) {
-      throw new Error("Question not found")
-    }
-    revalidatePath(path)
-  } catch (error) {
-    console.log(error)
-    throw error
-  }
-}
-
-export const saveQuestion = async (param: ToggleSaveQuestionParams) => {
-  try {
-    connectToDatabase()
-    const { questionId, userId, path } = param
-    const question = await QuestionDocument.findByIdAndUpdate(
-      questionId,
-      {
-        $push: { saves: userId }
-      }
     )
     if (!question) {
       throw new Error("Question not found")

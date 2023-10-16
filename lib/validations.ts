@@ -23,7 +23,7 @@ export const UserSchema = z.object({
   location: z.string().optional(),
   profileLink: z.string().optional(),
   reputation: z.number(),
-  saved: z.number().array(),
+  saved: z.coerce.string().array(),
   joinedAt: z.date(),
 })
 

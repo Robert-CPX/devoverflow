@@ -2,7 +2,7 @@
 
 import UserDocument from "@/database/user.model"
 import { connectToDatabase } from "../mongoose"
-import { CreateUserParams, DeleteUserParams, GetAllUsersParams, GetUserByIdParams, UpdateUserParams } from "./shared"
+import { CreateUserParams, DeleteUserParams, GetAllUsersParams, GetUserByIdParams, UpdateUserParams, ToggleSaveQuestionParams } from "./shared"
 import { revalidatePath } from "next/cache"
 import QuestionDocument from "@/database/question.model"
 import { UserListSchema, UserSchema } from "../validations"
@@ -79,6 +79,33 @@ export const getAllUsers = async (params: GetAllUsersParams) => {
       throw new Error('Error parsing all users')
     }
     return { parsedAllUsers };
+  } catch (error) {
+    console.log(error)
+    throw error
+  }
+}
+
+export const saveQuestion = async (param: ToggleSaveQuestionParams) => {
+  try {
+    connectToDatabase()
+    const { questionId, userId, path } = param
+    const user = await UserDocument.findById(userId)
+    if (!user) {
+      throw new Error('User not found')
+    }
+    const isQuestionSaved = user.saved.includes(questionId)
+    if (isQuestionSaved) {
+      await user.updateOne({ $pull: { saved: questionId } })
+      await QuestionDocument.findByIdAndUpdate(questionId, {
+        $pull: { saves: user._id }
+      });
+    } else {
+      await user.updateOne({ $push: { saved: questionId } })
+      await QuestionDocument.findByIdAndUpdate(questionId, {
+        $push: { saves: user._id }
+      });
+    }
+    revalidatePath(path)
   } catch (error) {
     console.log(error)
     throw error

@@ -1,8 +1,9 @@
 'use client'
 
 import { Button } from '@/components/ui/button'
-import { saveQuestion, upvoteQuestion, downvoteQuestion } from '@/lib/actions/question.action'
+import { upvoteQuestion, downvoteQuestion } from '@/lib/actions/question.action'
 import { upvoteAnswer, downvoteAnswer } from '@/lib/actions/answer.action'
+import { saveQuestion } from '@/lib/actions/user.action'
 import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 
