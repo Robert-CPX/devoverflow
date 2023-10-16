@@ -5,13 +5,17 @@ import { connectToDatabase } from "../mongoose"
 import { CreateUserParams, DeleteUserParams, GetAllUsersParams, GetUserByIdParams, UpdateUserParams } from "./shared"
 import { revalidatePath } from "next/cache"
 import QuestionDocument from "@/database/question.model"
-import { UsersSchema } from "../validations"
+import { UserListSchema, UserSchema } from "../validations"
 
 export const getUsereById = async (params: GetUserByIdParams) => {
   try {
     connectToDatabase()
-    const user = await UserDocument.findOne({ clerkId: params.userId })
-    return user
+    const user: unknown = await UserDocument.findOne({ clerkId: params.userId })
+    const parsedUser = UserSchema.safeParse(user)
+    if (!parsedUser.success) {
+      throw new Error('Error parsing user')
+    }
+    return parsedUser.data
   } catch (error) {
     console.log(error)
     throw error
@@ -70,7 +74,7 @@ export const getAllUsers = async (params: GetAllUsersParams) => {
     connectToDatabase()
     const allUsers: unknown = await UserDocument.find({})
       .sort({ createdAt: -1 });
-    const parsedAllUsers = UsersSchema.safeParse(allUsers)
+    const parsedAllUsers = UserListSchema.safeParse(allUsers)
     if (!parsedAllUsers.success) {
       throw new Error('Error parsing all users')
     }

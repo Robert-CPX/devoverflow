@@ -36,7 +36,7 @@ const HomeFilter = () => {
 
 const Home = async () => {
 
-  const result = await getQuestions({})
+  const questions = await getQuestions({})
   return (
     <section className='flex flex-col gap-8'>
       <div className='flex justify-between'>
@@ -47,17 +47,17 @@ const Home = async () => {
       </div>
       <SearchSection />
       <HomeFilter />
-      {result.questions.length > 0 ? (
-        result.questions.map((question) => (
+      {questions.length > 0 ? (
+        questions.map((question) => (
           <QuestionCard
             key={question._id}
             _id={question._id}
             title={question.title}
-            tags={question.tags}
+            tags={question.tags.map((tag) => ({ _id: tag._id, name: tag.name }))}
             author={question.author}
-            upvotes={question.upvotes}
+            upvotes={question.upvotes.length}
             views={question.views}
-            answers={question.answers}
+            answers={question.answers.length}
             createdAt={question.createdAt}
           />
         ))

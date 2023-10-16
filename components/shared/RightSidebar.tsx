@@ -62,7 +62,7 @@ const PopularTags = ({
 
 const RightSidebar = () => {
   return (
-    <aside className='background-light900_dark200 light-border sticky right-0 top-0 flex h-screen w-[330px] flex-col items-start gap-16 border-l px-6 pb-8 pt-36 shadow-light-300 dark:shadow-none max-xl:hidden'>
+    <aside className='background-light900_dark200 light-border sticky right-0 top-0 flex h-screen w-[330px] flex-col items-start gap-6 overflow-y-auto border-l px-6 pb-8 pt-36 shadow-light-300 dark:shadow-none max-xl:hidden'>
       <TopQuestions questions={mockTopQuestions} />
       <PopularTags tags={mockPopularTags} />
     </aside>

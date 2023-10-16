@@ -1,5 +1,5 @@
 import * as z from "zod"
-import mongoose, { Schema } from 'mongoose'
+import { ObjectId } from 'mongoose'
 
 export const QuestionFormSchema = z.object({
   title: z.string().min(3).max(130),
@@ -11,8 +11,8 @@ export const AnswerFormSchema = z.object({
   answer: z.string().nonempty(),
 })
 
-const UserSchema = z.object({
-  _id: z.custom<mongoose.ObjectId>(),
+export const UserSchema = z.object({
+  _id: z.coerce.string(),
   clerkId: z.string(),
   name: z.string(),
   username: z.string(),
@@ -27,38 +27,43 @@ const UserSchema = z.object({
   joinedAt: z.date(),
 })
 
-export const UsersSchema = z.array(UserSchema)
+export const UserListSchema = z.array(UserSchema)
 
 const TagSchema = z.object({
-  _id: z.custom<mongoose.ObjectId>(),
+  _id: z.coerce.string(),
   name: z.string(),
   description: z.string(),
-  questions: z.custom<Schema.Types.ObjectId>().array(),
-  followers: z.custom<Schema.Types.ObjectId>().array(),
-  creator: z.custom<Schema.Types.ObjectId>(),
+  questions: z.custom<ObjectId>().array(),
+  followers: UserListSchema,
+  creator: UserSchema,
   createdAt: z.date(),
 })
 
-export const TagsSchema = z.array(TagSchema)
+export const TagListSchema = z.array(TagSchema)
 
 export const AnswerSchema = z.object({
-  _id: z.custom<mongoose.ObjectId>(),
+  _id: z.coerce.string(),
   content: z.string().nonempty(),
-  upvotes: z.custom<mongoose.ObjectId>().array(),
-  downvotes: z.custom<mongoose.ObjectId>().array(),
-  author: z.custom<{ _id: string, clerkId: string, name: string, picture: string }>(),
+  upvotes: z.coerce.string().array(),
+  downvotes: z.coerce.string().array(),
+  author: z.custom<{ _id: ObjectId, clerkId: string, name: string, picture: string }>(),
   createdAt: z.date(),
 })
 
 export const AnswerListSchema = z.array(AnswerSchema)
 
 export const QuestionSchema = z.object({
-  _id: z.custom<mongoose.ObjectId>(),
+  _id: z.coerce.string(),
   title: z.string().min(3).max(130),
   content: z.string().nonempty(),
-  tags: z.custom<{ _id: string, name: string }>().array(),
+  tags: z.custom<{ _id: ObjectId, name: string }>().array(),
   views: z.number(),
-  author: z.custom<{ _id: string, clerkId: string, name: string, picture: string }>(),
-  answers: AnswerSchema.array(),
+  author: UserSchema,
+  answers: z.coerce.string().array(),
+  upvotes: z.coerce.string().array(),
+  downvotes: z.coerce.string().array(),
+  saves: z.coerce.string().array(),
   createdAt: z.date(),
 })
+
+export const QuestionListSchema = z.array(QuestionSchema)

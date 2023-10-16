@@ -25,8 +25,8 @@ const Page = async () => {
         <div className='grid gap-5 min-[400px]:grid-cols-1 min-[550px]:grid-cols-2 min-[800px]:grid-cols-3'>
           {allTags.map((tag) => (
             <TagCard
-              key={tag._id.toString()}
-              _id={tag._id.toString()}
+              key={tag._id}
+              _id={tag._id}
               name={tag.name}
               description={tag.description}
               followers={tag.followers.length}

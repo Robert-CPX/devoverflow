@@ -9,6 +9,7 @@ export type Question = {
   downvotes: Schema.Types.ObjectId[];
   author: Schema.Types.ObjectId;
   answers: Schema.Types.ObjectId[];
+  saves: Schema.Types.ObjectId[];
   createdAt: Date;
 } | Document;
 
@@ -21,6 +22,7 @@ const QuestionSchema = new Schema({
   downvotes: [{ type: Schema.Types.ObjectId, ref: 'User' }],
   author: { type: Schema.Types.ObjectId, ref: 'User' },
   answers: [{ type: Schema.Types.ObjectId, ref: 'Answer' }],
+  saves: [{ type: Schema.Types.ObjectId, ref: 'User' }],
   createdAt: { type: Date, default: Date.now },
 })
 

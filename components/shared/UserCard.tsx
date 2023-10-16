@@ -23,7 +23,7 @@ const UserCard = async ({
       <p className='body-regular text-dark500_light500'>@{username}</p>
       {/* <div className='flex items-center gap-2'>
         {interactedTags.map((tag) => (
-          <RenderTag key={tag._id.toString()} _id={tag._id.toString()} name={tag.name} customClassName="uppercase subtle-medium rounded-md px-4 py-2" />
+          <RenderTag key={tag._id} _id={tag._id} name={tag.name} customClassName="uppercase subtle-medium rounded-md px-4 py-2" />
         ))}
       </div> */}
     </Link>

@@ -13,7 +13,6 @@ import { getUsereById } from '@/lib/actions/user.action'
 import { getAnswers } from '@/lib/actions/answer.action'
 import AnswerCard from '@/components/shared/cards/AnswerCard'
 import Votes from '@/components/shared/Votes'
-import { Button } from '@/components/ui/button'
 
 const Influence = ({
   asked, answers, views, votes
@@ -46,7 +45,9 @@ const Page = async ({ params }: { params: { id: string } }) => {
   const { userId } = auth()
   if (!userId) return (<p>Not logged in</p>)
   const mongooseUser = await getUsereById({ userId })
-  const isCollected = false
+  const upvotedQuestion = question.upvotes.some(_id => _id === mongooseUser._id)
+  const downvotedQuestion = question.downvotes.some(_id => _id === mongooseUser._id)
+  const isSaved = question.saves.some(userId => userId === mongooseUser._id)
 
   return (
     <article className='flex flex-col justify-start gap-[30px]'>
@@ -56,20 +57,17 @@ const Page = async ({ params }: { params: { id: string } }) => {
             <Image src={question.author.picture} alt="profile" width={22} height={22} className='rounded-full' />
             <p className='paragraph-semibold text-dark300_light700'>{question.author.name}</p>
           </Link>
-          <div className='flex gap-1'>
-            <Votes upvoted downvoted={false} />
-            <Button variant="outline" size="icon" className='ml-[6px] h-[18px] w-[18px] border-none'>
-              <Image src={`/assets/icons/${isCollected ? "star-filled" : "star-red"}.svg`} alt='star icon' width={18} height={18} />
-            </Button>
-          </div>
+          <Votes type='Question' upvoted={upvotedQuestion} downvoted={downvotedQuestion} id={question._id} userId={mongooseUser._id} upvoteNum={question.upvotes.length} downvoteNum={question.downvotes.length} saved={isSaved} />
         </div>
         <h2 className='h2-semibold text-dark200_light900 mb-1'>{question.title}</h2>
         <Influence asked={getTimeStamp(question.createdAt)} answers={question.answers.length} views={question.views} votes={0} />
       </div>
-      <ParseHTML data={question.content} />
+      <div className='markdown'>
+        <ParseHTML data={question.content} />
+      </div>
       <div className='mt-2 flex gap-2'>
         {question.tags.map((tag) => (
-          <RenderTag key={tag._id} _id={tag._id} name={tag.name} customClassName="uppercase subtle-medium rounded-md px-4 py-2" />
+          <RenderTag key={tag._id.toString()} _id={tag._id.toString()} name={tag.name} customClassName="uppercase subtle-medium rounded-md px-4 py-2" />
         ))}
       </div>
       <div className='mt-1 flex items-center justify-between'>
@@ -77,15 +75,17 @@ const Page = async ({ params }: { params: { id: string } }) => {
         <Filter filters={AnswerFilters} />
       </div>
       {answers && answers.map((answer) => (
-        <AnswerCard key={JSON.stringify(answer._id)}
+        <AnswerCard key={answer._id}
+          _id={answer._id}
           content={answer.content}
-          upvotes={answer.upvotes.length}
-          downvotes={answer.downvotes.length}
-          author={{ clerkId: answer.author.clerkId, _id: answer.author._id, name: answer.author.name, picture: answer.author.picture }}
+          upvotes={answer.upvotes}
+          downvotes={answer.downvotes}
+          author={{ clerkId: answer.author.clerkId, _id: answer.author._id.toString(), name: answer.author.name, picture: answer.author.picture }}
+          userId={mongooseUser._id}
           createdAt={answer.createdAt}
         />
       ))}
-      <AnswerForm question={question.content} questionId={JSON.stringify(question._id)} userId={JSON.stringify(mongooseUser._id)} />
+      <AnswerForm question={question.content} questionId={question._id} userId={mongooseUser._id} />
     </article>
   )
 }

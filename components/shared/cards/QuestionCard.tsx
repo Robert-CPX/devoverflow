@@ -13,12 +13,13 @@ type QuestionCardProps = {
   }[];
   author: {
     _id: string;
+    clerkId: string;
     name: string;
     picture: string;
   };
   upvotes: number;
   views: number;
-  answers: Array<object>;
+  answers: number;
   createdAt: Date;
 }
 
@@ -60,7 +61,7 @@ const QuestionCard = ({
         </Link>
         <div className='flex gap-2'>
           <Actiontem icon='/assets/icons/like.svg' number={upvotes} unit='Votes' />
-          <Actiontem icon='/assets/icons/message.svg' number={answers.length} unit='Answers' />
+          <Actiontem icon='/assets/icons/message.svg' number={answers} unit='Answers' />
           <Actiontem icon='/assets/icons/eye.svg' number={views} unit='Views' />
         </div>
       </div>

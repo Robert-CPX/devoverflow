@@ -11,7 +11,7 @@ import { Button } from '../ui/button'
 const LeftSidebar = () => {
   const pathname = usePathname()
   return (
-    <section className='background-light900_dark200 light-border sticky left-0 top-0 flex h-screen flex-col items-start justify-between border-r px-6 pb-8 pt-36 shadow-light-300 dark:shadow-none max-sm:hidden lg:w-[266px]'>
+    <section className='background-light900_dark200 light-border sticky left-0 top-0 flex h-screen w-fit flex-col items-start justify-between overflow-y-auto border-r px-6 pb-8 pt-36 shadow-light-300 dark:shadow-none max-sm:hidden lg:w-[260px]'>
       <div className='flex w-full flex-col gap-y-6'>
         {sidebarLinks.map((item) => {
           const isActive = (pathname.includes(item.route) && item.route.length > 1) || pathname === item.route;

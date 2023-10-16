@@ -3,13 +3,13 @@
 import TagDocument from "@/database/tag.model"
 import { connectToDatabase } from "../mongoose"
 import { GetAllTagsParams, GetTopInteractedTagsParams } from "./shared"
-import { TagsSchema } from "../validations"
+import { TagListSchema } from "../validations"
 
 export const getAllTags = async (params: GetAllTagsParams) => {
   try {
     connectToDatabase()
     const allTags: unknown = await TagDocument.find({})
-    const parsedAllTags = TagsSchema.parse(allTags)
+    const parsedAllTags = TagListSchema.parse(allTags)
     if (!parsedAllTags) {
       throw new Error('Tags not found')
     }
