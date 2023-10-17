@@ -5,7 +5,9 @@ import { upvoteQuestion, downvoteQuestion } from '@/lib/actions/question.action'
 import { upvoteAnswer, downvoteAnswer } from '@/lib/actions/answer.action'
 import { saveQuestion } from '@/lib/actions/user.action'
 import Image from 'next/image'
-import { usePathname } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
+import { useEffect } from 'react'
+import { viewQuestion } from '@/lib/actions/interaction.action'
 
 type VotesProps = {
   type: "Question" | "Answer";
@@ -21,10 +23,11 @@ type VotesProps = {
 const Votes = ({
   upvoted, downvoted, upvoteNum = 0, downvoteNum = 0, type, id, userId, saved = false
 }: VotesProps) => {
-  const path = usePathname()
+  const pathname = usePathname()
+  const router = useRouter()
 
   const handleUpvote = async () => {
-    const upvoteParam = { userId, hasupVoted: upvoted, hasdownVoted: downvoted, path }
+    const upvoteParam = { userId, hasupVoted: upvoted, hasdownVoted: downvoted, path: pathname }
     if (type === "Question") {
       await upvoteQuestion({ questionId: id, ...upvoteParam })
     } else if (type === "Answer") {
@@ -33,7 +36,7 @@ const Votes = ({
   }
 
   const handleDownvote = async () => {
-    const downvoteParam = { userId, hasupVoted: upvoted, hasdownVoted: downvoted, path }
+    const downvoteParam = { userId, hasupVoted: upvoted, hasdownVoted: downvoted, path: pathname }
     if (type === "Question") {
       await downvoteQuestion({ questionId: id, ...downvoteParam })
     } else if (type === "Answer") {
@@ -42,8 +45,12 @@ const Votes = ({
   }
 
   const handleSave = async () => {
-    await saveQuestion({ questionId: id, userId, path })
+    await saveQuestion({ questionId: id, userId, path: pathname })
   }
+
+  useEffect(() => {
+    viewQuestion({ questionId: id, userId })
+  }, [id, userId, pathname, router])
 
   return (
     <div className='flex-center gap-[10px]'>
