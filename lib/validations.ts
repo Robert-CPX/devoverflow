@@ -33,9 +33,9 @@ const TagSchema = z.object({
   _id: z.coerce.string(),
   name: z.string(),
   description: z.string(),
-  questions: z.custom<ObjectId>().array(),
-  followers: UserListSchema,
-  creator: UserSchema,
+  questions: z.coerce.string().array(),
+  followers: z.coerce.string().array(),
+  creator: z.coerce.string(),
   createdAt: z.date(),
 })
 
@@ -82,4 +82,14 @@ export const UserAllQuestionsSchema = z.object({
   reputation: z.number(),
   saved: QuestionListSchema,
   joinedAt: z.date(),
+})
+
+export const TagAllQuestionsSchema = z.object({
+  _id: z.coerce.string(),
+  name: z.string(),
+  description: z.string(),
+  questions: QuestionListSchema,
+  followers: z.coerce.string().array(),
+  creator: z.coerce.string(),
+  createdAt: z.date(),
 })

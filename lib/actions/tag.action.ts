@@ -2,8 +2,8 @@
 
 import TagDocument from "@/database/tag.model"
 import { connectToDatabase } from "../mongoose"
-import { GetAllTagsParams, GetTopInteractedTagsParams } from "./shared"
-import { TagListSchema } from "../validations"
+import { GetAllTagsParams, GetQuestionsByTagIdParams, GetTopInteractedTagsParams } from "./shared"
+import { TagAllQuestionsSchema, TagListSchema } from "../validations"
 
 export const getAllTags = async (params: GetAllTagsParams) => {
   try {
@@ -36,5 +36,34 @@ export const getTopInteractedTags = async (params: GetTopInteractedTagsParams) =
   } catch (error) {
     console.log(error)
     throw error
+  }
+}
+
+export const getQuestionsByTagId = async (param: GetQuestionsByTagIdParams) => {
+  try {
+    connectToDatabase()
+    const { tagId, page = 1, pageSize = 10, searchQuery } = param;
+    let searchCmd = {}
+    if (searchQuery) {
+      searchCmd = { title: { $regex: new RegExp(searchQuery, "i") } }
+    }
+    const tagDetail: unknown = await TagDocument.findById(tagId)
+      .populate({
+        path: "questions",
+        populate: [
+          { path: "tags", select: "_id name" },
+          { path: "author" },
+        ],
+        match: searchCmd,
+        options: { sort: { createdAt: -1 }, skip: (page - 1) * pageSize, limit: pageSize },
+      })
+    const parsedResult = TagAllQuestionsSchema.safeParse(tagDetail);
+    if (!parsedResult.success) {
+      throw new Error("tag related questions not found");
+    }
+    return { name: parsedResult.data.name, questions: parsedResult.data.questions };
+  } catch (error) {
+    console.log(error)
+    throw error;
   }
 }

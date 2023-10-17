@@ -55,7 +55,7 @@ const LocalSearchBar = ({ type }: { type: LocalSearchType }) => {
         type='text'
         onKeyDown={handleInputKeyDown}
         className='text-dark400_light900 no-focus placeholder paragraph-regular border-none bg-transparent outline-none'
-        placeholder={`${type === "Question" ? "Search questions..." : type === "User" ? "Search amazing minds here..." : "Search by tag name..."}`}
+        placeholder={`${type === "Question" ? "Search questions..." : type === "User" ? "Search amazing minds here..." : "Search tag questions..."}`}
       />
     </div>
   )
