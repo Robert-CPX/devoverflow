@@ -53,7 +53,7 @@ const Home = async () => {
             key={question._id}
             _id={question._id}
             title={question.title}
-            tags={question.tags.map((tag) => ({ _id: tag._id, name: tag.name }))}
+            tags={question.tags.map((tag) => ({ _id: tag._id.toString(), name: tag.name }))}
             author={question.author}
             upvotes={question.upvotes.length}
             views={question.views}

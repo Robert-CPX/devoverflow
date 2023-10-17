@@ -67,3 +67,19 @@ export const QuestionSchema = z.object({
 })
 
 export const QuestionListSchema = z.array(QuestionSchema)
+
+export const UserAllQuestionsSchema = z.object({
+  _id: z.coerce.string(),
+  clerkId: z.string(),
+  name: z.string(),
+  username: z.string(),
+  email: z.string().email(),
+  password: z.string().optional(),
+  bio: z.string().optional(),
+  picture: z.string(),
+  location: z.string().optional(),
+  profileLink: z.string().optional(),
+  reputation: z.number(),
+  saved: QuestionListSchema,
+  joinedAt: z.date(),
+})

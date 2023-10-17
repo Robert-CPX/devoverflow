@@ -1,3 +1,5 @@
+'use client'
+
 import React from 'react'
 import {
   Select,
@@ -7,6 +9,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import { useRouter, useSearchParams } from 'next/navigation';
 
 type FilterProps = {
   filters: {
@@ -16,9 +19,18 @@ type FilterProps = {
   customClassName?: string;
 }
 
-const Filter = ({filters, customClassName}: FilterProps) => {
+const Filter = ({ filters, customClassName }: FilterProps) => {
+  const router = useRouter()
+  const searchParams = useSearchParams()
+
+  const handleFilter = (value: string) => {
+    const params = new URLSearchParams(searchParams.toString())
+    params.set('filter', encodeURI(value))
+    router.push(`?${params}`)
+  }
+
   return (
-    <Select>
+    <Select onValueChange={handleFilter}>
       <SelectTrigger className="background-light800_darkgradient text-dark500_light700 light-border h-full min-h-[56px] w-[180px] max-sm:w-full">
         <SelectValue placeholder="Select a Filter" />
       </SelectTrigger>
