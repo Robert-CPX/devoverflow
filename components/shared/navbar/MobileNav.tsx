@@ -9,23 +9,26 @@ import {
 } from "@/components/ui/sheet"
 import Image from 'next/image'
 import Link from 'next/link'
-import { SignedOut } from '@clerk/nextjs'
+import { SignedOut, useAuth } from '@clerk/nextjs'
 import { Button } from '@/components/ui/button'
 import { usePathname } from 'next/navigation'
 import { sidebarLinks } from '@/constants/constants'
 
 const NavContent = () => {
   const pathname = usePathname()
+  const { userId } = useAuth()
   return (
     <section className='flex w-full flex-col gap-6 pt-16'>
       {sidebarLinks.map((item) => {
         const isActive = (pathname.includes(item.route) && item.route.length > 1) || pathname === item.route;
-
+        if (item.route === '/profile') {
+          item.route = `/profile/${userId}`
+        }
         return (
           <SheetClose asChild key={item.route}>
             <Link
               href={item.route}
-              className={`${isActive ? 'primary-gradient rounded-lg text-light-900': 'text-dark300_light900'} flex items-center justify-start gap-4 bg-transparent p-4`}
+              className={`${isActive ? 'primary-gradient rounded-lg text-light-900' : 'text-dark300_light900'} flex items-center justify-start gap-4 bg-transparent p-4`}
             >
               <Image
                 src={item.imgURL}
@@ -57,7 +60,7 @@ const MobileNav = () => {
       </SheetTrigger>
       <SheetContent side="left" className='background-light900_dark200 border-none'>
         <Link href="/" className='flex gap-1'>
-          <Image 
+          <Image
             src="./assets/images/site-logo.svg"
             width={23}
             height={23}

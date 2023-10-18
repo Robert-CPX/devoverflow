@@ -6,6 +6,7 @@ import { CreateUserParams, DeleteUserParams, GetAllUsersParams, GetUserByIdParam
 import { revalidatePath } from "next/cache"
 import QuestionDocument from "@/database/question.model"
 import { UserListSchema, UserSchema, UserAllQuestionsSchema } from "../validations"
+import AnswerDocument from "@/database/answer.model"
 
 export const getUsereById = async (params: GetUserByIdParams) => {
   try {
@@ -195,3 +196,20 @@ export const getSavedQuestions = async (params: GetSavedQuestionsParams) => {
 //     throw error
 //   }
 // }
+
+export const getUserInfo = async (params: GetUserByIdParams) => {
+  try {
+    connectToDatabase()
+    const user: unknown = await UserDocument.findOne({ clerkId: params.userId })
+    const parsedUser = UserSchema.safeParse(user)
+    if (!parsedUser.success) {
+      throw new Error('Error parsing user')
+    }
+    const totalQuestions = await QuestionDocument.countDocuments({ author: parsedUser.data._id })
+    const totalAnswers = await AnswerDocument.countDocuments({ author: parsedUser.data._id })
+    return { user: parsedUser.data, totalQuestions, totalAnswers }
+  } catch (error) {
+    console.log(error)
+    throw error
+  }
+}
