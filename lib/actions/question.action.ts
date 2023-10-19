@@ -3,7 +3,7 @@
 import { connectToDatabase } from "../mongoose"
 import TagDocument from "@/database/tag.model";
 import QuestionDocument from "@/database/question.model"
-import { CreateQuestionParams, DeleteQuestionParams, GetQuestionByIdParams, GetQuestionsParams, QuestionVoteParams } from "./shared";
+import { CreateQuestionParams, DeleteQuestionParams, EditQuestionParams, GetQuestionByIdParams, GetQuestionsParams, QuestionVoteParams } from "./shared";
 import { revalidatePath } from "next/cache";
 import { QuestionSchema, QuestionListSchema } from "../validations";
 import AnswerDocument from "@/database/answer.model";
@@ -31,6 +31,34 @@ export const createQuestion = async (param: CreateQuestionParams) => {
     }
     await QuestionDocument.findByIdAndUpdate(question._id, {
       $push: { tags: tagDocuments }
+    });
+    revalidatePath(path);
+  } catch (error) {
+    console.log(error)
+    throw error;
+  }
+}
+
+export const editQuestion = async (param: EditQuestionParams) => {
+  try {
+    connectToDatabase();
+    const { questionId, content, title, tags, path } = param;
+    await QuestionDocument.findOneAndUpdate(
+      { _id: questionId },
+      { content, title, tags: [] }
+    )
+    const tagDocuments = [];
+
+    for (const tag of tags) {
+      const existingTag = await TagDocument.findOneAndUpdate(
+        { name: { $regex: new RegExp(`^${tag}$`, "i") } },
+        { $setOnInsert: { name: tag, description: 'a piece of description' }, $push: { questions: questionId } },
+        { upsert: true, new: true }
+      )
+      tagDocuments.push(existingTag._id);
+    }
+    await QuestionDocument.findByIdAndUpdate(questionId, {
+      $addToSet: { tags: tagDocuments }
     });
     revalidatePath(path);
   } catch (error) {

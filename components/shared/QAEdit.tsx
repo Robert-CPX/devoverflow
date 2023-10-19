@@ -2,7 +2,7 @@
 import { Button } from '@/components/ui/button'
 import { deleteQuestion } from '@/lib/actions/question.action';
 import Image from 'next/image'
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 
 type QAEditProps = {
   type: 'top_post' | 'answers';
@@ -11,7 +11,9 @@ type QAEditProps = {
 
 const QAEdit = ({ itemId, type }: QAEditProps) => {
   const pathname = usePathname()
+  const router = useRouter()
   const handleEdit = () => {
+    router.push(`/question/edit/${itemId}`)
   }
   const handleDelete = () => {
     deleteQuestion({ questionId: itemId, path: pathname })

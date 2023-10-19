@@ -19,38 +19,60 @@ import { Editor } from "@tinymce/tinymce-react"
 import { QuestionFormSchema } from '@/lib/validations'
 import Image from 'next/image'
 import { Badge } from '@/components/ui/badge'
-import { createQuestion } from '@/lib/actions/question.action';
+import { createQuestion, editQuestion } from '@/lib/actions/question.action';
 import { useRouter, usePathname } from 'next/navigation';
 import { useTheme } from '@/context/ThemeProvider';
 
-const QuestionForm = ({ mongoUserId }: { mongoUserId: string }) => {
+type QuestionFormProps = {
+  mongoUserId: string;
+  questionId?: string;
+  title?: string;
+  detail?: string;
+  tags?: string[];
+  mode: 'create' | 'edit';
+}
+
+const QuestionForm = ({
+  mongoUserId, questionId, title = '', detail = '', tags = [], mode = 'create'
+}: QuestionFormProps) => {
   const { theme } = useTheme()
   const [isSubmitting, setIsSubmitting] = useState(false)
   const editorRef = useRef(null);
   const router = useRouter()
   const pathname = usePathname()
 
-  // 1. Define your form.
   const form = useForm<z.infer<typeof QuestionFormSchema>>({
     resolver: zodResolver(QuestionFormSchema),
     defaultValues: {
-      title: "",
-      detail: "",
-      tags: []
+      title,
+      detail,
+      tags
     },
   })
 
   const onSubmit = async (values: z.infer<typeof QuestionFormSchema>) => {
     setIsSubmitting(true)
     try {
-      await createQuestion({
-        title: values.title,
-        content: values.detail,
-        tags: values.tags,
-        author: mongoUserId,
-        path: pathname
-      })
-      router.push('/');
+      if (mode === 'create') {
+        await createQuestion({
+          title: values.title,
+          content: values.detail,
+          tags: values.tags,
+          author: mongoUserId,
+          path: pathname
+        })
+        router.push('/');
+      } else if (mode === 'edit') {
+        if (!questionId) throw new Error('Question ID is required')
+        await editQuestion({
+          questionId,
+          title: values.title,
+          content: values.detail,
+          tags: values.tags,
+          path: pathname
+        })
+        router.push(`/question/${questionId}`);
+      }
     } catch (error) {
       console.log(error)
     } finally {
@@ -92,6 +114,7 @@ const QuestionForm = ({ mongoUserId }: { mongoUserId: string }) => {
         <FormField
           control={form.control}
           name="title"
+          defaultValue={title}
           render={({ field }) => (
             <FormItem>
               <FormLabel className="paragraph-semibold text-dark400_light800">Question Title <span className="paragraph-semibold text-warning">*</span></FormLabel>
@@ -108,6 +131,7 @@ const QuestionForm = ({ mongoUserId }: { mongoUserId: string }) => {
         <FormField
           control={form.control}
           name="detail"
+          defaultValue={detail}
           render={({ field }) => (
             <FormItem>
               <FormLabel className="paragraph-semibold text-dark400_light800">Detailed explanation of your problem? <span className="paragraph-semibold text-warning">*</span></FormLabel>
@@ -122,7 +146,7 @@ const QuestionForm = ({ mongoUserId }: { mongoUserId: string }) => {
                   onEditorChange={(content) => {
                     field.onChange(content)
                   }}
-                  initialValue=''
+                  initialValue={detail}
                   init={{
                     height: 350,
                     menubar: false,
@@ -150,6 +174,7 @@ const QuestionForm = ({ mongoUserId }: { mongoUserId: string }) => {
         <FormField
           control={form.control}
           name="tags"
+          defaultValue={tags}
           render={({ field }) => (
             <FormItem>
               <FormLabel className="paragraph-semibold text-dark400_light800">Tags <span className="paragraph-semibold text-warning">*</span></FormLabel>
@@ -159,10 +184,10 @@ const QuestionForm = ({ mongoUserId }: { mongoUserId: string }) => {
                     handleInputKeyDown(e, field)
                   }} />
                   <div className='flex-start mt-2.5 gap-2.5'>
-                    {field.value.map((tag, index) => (
+                    {field.value.map((tag) => (
                       <Badge key={tag} className='subtle-medium background-light800_dark300 text-light400_light500 flex items-center justify-center gap-2 rounded-md border-none px-4 py-2 capitalize' onClick={() => handleTagRemove(tag, field)}>
                         {tag}
-                        <Image src="assets/icons/close.svg" alt='close icon' width={12} height={12} className='cursor-pointer object-contain invert-0 dark:invert' />
+                        <Image src="/assets/icons/close.svg" alt='close icon' width={12} height={12} className='cursor-pointer object-contain invert-0 dark:invert' />
                       </Badge>
                     ))}
                   </div>
@@ -178,11 +203,11 @@ const QuestionForm = ({ mongoUserId }: { mongoUserId: string }) => {
         <Button type="submit" className='primary-gradient min-h-[46px] max-w-[170px] self-end px-4 py-3 text-light-900' disabled={isSubmitting}>
           {isSubmitting ? (
             <>
-              {'Posting...'}
+              {mode === 'create' ? 'Posting...' : 'Editing...'}
             </>
           ) : (
             <>
-              {'Ask a Question'}
+              {mode === 'create' ? 'Ask a Question' : "Edit Question"}
             </>
           )}
         </Button>
