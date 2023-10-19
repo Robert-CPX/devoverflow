@@ -1,4 +1,3 @@
-import { Schema } from "mongoose";
 import { User } from "@/database/user.model";
 
 export type CreateAnswerParams = {

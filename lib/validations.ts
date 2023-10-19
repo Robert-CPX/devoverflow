@@ -93,3 +93,11 @@ export const TagAllQuestionsSchema = z.object({
   creator: z.coerce.string(),
   createdAt: z.date(),
 })
+
+export const EditProfileSchema = z.object({
+  name: z.string().min(3).max(30),
+  username: z.string().min(3).max(30),
+  profileLink: z.string().url().optional(),
+  location: z.string().min(3).max(30).optional(),
+  bio: z.string().min(3).max(180).optional(),
+})
