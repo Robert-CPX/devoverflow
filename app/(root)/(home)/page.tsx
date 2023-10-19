@@ -3,11 +3,11 @@ import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { LocalSearchBar } from '@/components/shared/SearchBar'
 import QuestionCard from '@/components/shared/cards/QuestionCard'
-import Filter from '@/components/shared/Filter'
+import { Filter, HomeFilter } from '@/components/shared/Filter'
 import { HomePageFilters } from '@/constants/filter'
 import NoResult from '@/components/shared/NoResult'
 import { getQuestions } from '@/lib/actions/question.action'
-// import Pagination from '@/components/shared/Pagination'
+import Pagination from '@/components/shared/Pagination'
 
 const SearchSection = () => {
   return (
@@ -20,23 +20,15 @@ const SearchSection = () => {
   )
 }
 
-const HomeFilter = () => {
-  const active = ''
-
-  return (
-    <div className='flex gap-3 max-md:hidden'>
-      {HomePageFilters.map((filter) => (
-        <Button key={filter.value} className={`body-medium rounded-lg px-6 py-3 capitalize shadow-none dark:bg-dark-300 ${active === filter.value ? " bg-primary-100 text-primary-500" : "bg-light-800 text-light-500"}`}>
-          {filter.name}
-        </Button>
-      ))}
-    </div>
-  )
-}
-
-const Home = async () => {
-
-  const questions = await getQuestions({})
+const Home = async ({
+  params, searchParams
+}: {
+  params: string,
+  searchParams: {
+    [key: string]: string | number | undefined
+  }
+}) => {
+  const questions = await getQuestions({ searchQuery: decodeURI(searchParams.q as string ?? ""), page: searchParams.page as number })
   return (
     <section className='flex flex-col gap-8'>
       <div className='flex justify-between'>
@@ -71,7 +63,7 @@ const Home = async () => {
           />
         </div>
       )}
-      {/* <Pagination /> */}
+      <Pagination count={questions.length} />
     </section>
   )
 }

@@ -1,6 +1,6 @@
 'use client'
 
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import {
   Select,
   SelectContent,
@@ -10,6 +10,8 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { useRouter, useSearchParams } from 'next/navigation';
+import { HomePageFilters } from '@/constants/filter';
+import { Button } from '../ui/button';
 
 type FilterProps = {
   filters: {
@@ -22,7 +24,6 @@ type FilterProps = {
 const Filter = ({ filters, customClassName }: FilterProps) => {
   const router = useRouter()
   const searchParams = useSearchParams()
-
   const handleFilter = (value: string) => {
     const params = new URLSearchParams(searchParams.toString())
     params.set('filter', encodeURI(value))
@@ -45,4 +46,34 @@ const Filter = ({ filters, customClassName }: FilterProps) => {
   )
 }
 
-export default Filter
+const HomeFilter = () => {
+  const [active, setActive] = useState("")
+  const router = useRouter()
+  const searchParams = useSearchParams()
+
+  const handleFilter = (e: React.MouseEvent<HTMLButtonElement>, value: string) => {
+    const params = new URLSearchParams(searchParams.toString())
+    params.set('filter', encodeURI(value))
+    setActive(value)
+    router.push(`?${params}`)
+  }
+
+  useEffect(() => {
+    setActive(searchParams.get('filter') ?? "")
+  }, [searchParams])
+
+  return (
+    <div className='flex gap-3 max-md:hidden'>
+      {HomePageFilters.map((filter) => (
+        <Button onClick={(e) => handleFilter(e, filter.value)} key={filter.value} className={`body-medium rounded-lg px-6 py-3 capitalize shadow-none dark:bg-dark-300 ${active === filter.value ? " bg-primary-100 text-primary-500" : "bg-light-800 text-light-500"}`}>
+          {filter.name}
+        </Button>
+      ))}
+    </div>
+  )
+}
+
+export {
+  Filter,
+  HomeFilter
+} 

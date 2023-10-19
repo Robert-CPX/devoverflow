@@ -6,6 +6,7 @@ import { AnswerVoteParams, CreateAnswerParams, GetAnswersParams } from "./shared
 import AnswerDocument from "@/database/answer.model";
 import QuestionDocument from "@/database/question.model";
 import { AnswerListSchema } from "../validations";
+import InteractionDocument from "@/database/interaction.model";
 
 export const createAnswer = async (param: CreateAnswerParams) => {
   try {
@@ -19,6 +20,14 @@ export const createAnswer = async (param: CreateAnswerParams) => {
     await QuestionDocument.findByIdAndUpdate(question, {
       $push: { answers: newAnswer._id },
     });
+
+    await InteractionDocument.create({
+      user: author,
+      question,
+      answer: newAnswer._id,
+      action: 'answered'
+    })
+
     revalidatePath(path)
   } catch (error) {
     console.log(error)

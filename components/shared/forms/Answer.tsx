@@ -44,8 +44,8 @@ const AnswerForm = ({ question, questionId, userId }: AnswerFormProps) => {
     try {
       await createAnswer({
         content: values.answer,
-        author: JSON.parse(userId),
-        question: JSON.parse(questionId),
+        author: userId,
+        question: questionId,
         path: pathname,
       })
       form.reset()

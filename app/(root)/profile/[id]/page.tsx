@@ -1,15 +1,20 @@
 import { QAStatsCard, BadgeStatsCard } from '@/components/shared/cards/StatsCard'
 import UserCard from '@/components/shared/cards/UserCard'
 import { Button } from '@/components/ui/button'
-import { getUserInfo } from '@/lib/actions/user.action'
+import { getAnswersByUser, getQuestionsByUser, getUserInfo } from '@/lib/actions/user.action'
 import { SignedIn, auth } from '@clerk/nextjs'
 import Link from 'next/link'
 import React from 'react'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import QuestionCard from '@/components/shared/cards/QuestionCard'
+import NoResult from '@/components/shared/NoResult'
+import Pagination from '@/components/shared/Pagination'
 
 const Page = async ({ params }: { params: { id: string } }) => {
   const clerkId = auth().userId
   const { user, totalAnswers, totalQuestions } = await getUserInfo({ userId: params.id })
+  const userQuestions = await getQuestionsByUser({ userId: user._id })
+  const userAnswers = [1]
   return (
     <section className='flex flex-col items-start gap-5'>
       <div className='relative flex w-full'>
@@ -45,8 +50,38 @@ const Page = async ({ params }: { params: { id: string } }) => {
             <TabsTrigger value="top_posts" className='tab'>Top Posts</TabsTrigger>
             <TabsTrigger value="answers" className='tab'>Answers</TabsTrigger>
           </TabsList>
-          <TabsContent value="top_posts">Posts</TabsContent>
-          <TabsContent value="answers">Answers</TabsContent>
+          <TabsContent value="top_posts">
+            {userQuestions.length > 0 ? (
+              userQuestions.map((question) => (
+                <QuestionCard
+                  key={question._id}
+                  _id={question._id}
+                  title={question.title}
+                  tags={question.tags.map((tag) => ({ _id: tag._id.toString(), name: tag.name }))}
+                  author={question.author}
+                  upvotes={question.upvotes.length}
+                  views={question.views}
+                  answers={question.answers.length}
+                  createdAt={question.createdAt}
+                />
+              ))
+            ) : (
+              <div className='flex justify-center'>
+                <NoResult
+                  title='There&apos;s no question to show'
+                  description='Be the first to break the silence! 🚀 Ask a Question and kickstart the discussion. our query could be the next big thing others learn from. Get involved! 💡'
+                  link='/ask-question'
+                  linkText='Ask a Question'
+                />
+              </div>
+            )}
+            <div className='mt-9 flex'>
+              <Pagination count={userQuestions.length} />
+            </div>
+          </TabsContent>
+          <TabsContent value="answers">
+
+          </TabsContent>
         </Tabs>
       </div>
     </section>

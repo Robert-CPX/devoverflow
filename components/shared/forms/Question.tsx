@@ -23,8 +23,6 @@ import { createQuestion } from '@/lib/actions/question.action';
 import { useRouter, usePathname } from 'next/navigation';
 import { useTheme } from '@/context/ThemeProvider';
 
-const type = 'edit'
-
 const QuestionForm = ({ mongoUserId }: { mongoUserId: string }) => {
   const { theme } = useTheme()
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -49,12 +47,12 @@ const QuestionForm = ({ mongoUserId }: { mongoUserId: string }) => {
         title: values.title,
         content: values.detail,
         tags: values.tags,
-        author: JSON.parse(mongoUserId),
+        author: mongoUserId,
         path: pathname
       })
       router.push('/');
     } catch (error) {
-
+      console.log(error)
     } finally {
       setIsSubmitting(false)
     }
@@ -180,11 +178,11 @@ const QuestionForm = ({ mongoUserId }: { mongoUserId: string }) => {
         <Button type="submit" className='primary-gradient min-h-[46px] max-w-[170px] self-end px-4 py-3 text-light-900' disabled={isSubmitting}>
           {isSubmitting ? (
             <>
-              {type === 'edit' ? 'Editing...' : 'Posting...'}
+              {'Posting...'}
             </>
           ) : (
             <>
-              {type === 'edit' ? 'Edit Question' : 'Ask a Question'}
+              {'Ask a Question'}
             </>
           )}
         </Button>

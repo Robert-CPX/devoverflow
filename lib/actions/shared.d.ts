@@ -15,6 +15,13 @@ export type GetAnswersParams = {
   pageSize?: number;
 }
 
+export type GetAnswersByUserParams = {
+  userId: string;
+  sortBy?: string;
+  page?: number;
+  pageSize?: number;
+}
+
 export type AnswerVoteParams = {
   answerId: string;
   userId: string;
@@ -61,7 +68,7 @@ export type CreateQuestionParams = {
   title: string;
   content: string;
   tags: string[];
-  author: Schema.Types.ObjectId | User;
+  author: string;
   path: string;
 }
 
