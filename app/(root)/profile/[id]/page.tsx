@@ -72,7 +72,7 @@ const Page = async ({
                     views={question.views}
                     answers={question.answers.length}
                     createdAt={question.createdAt}
-                    type='top_posts'
+                    type='top_post'
                   />
                 ))
               ) : (

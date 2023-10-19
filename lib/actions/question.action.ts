@@ -196,3 +196,24 @@ export const deleteQuestion = async (param: DeleteQuestionParams) => {
     throw error
   }
 }
+
+/*
+  TODO:
+  priority: answers, saves, upvotes, views answers*50% + saves*20% + upvotes*20% + views*10%
+ */
+export const getTopQuestions = async () => {
+  try {
+    connectToDatabase()
+    const questions: unknown = await QuestionDocument.find({}, null, { limit: 5, sort: { answers: -1 } })
+      .populate({ path: "tags", select: "_id name" })
+      .populate("author");
+    const parsedQuestions = QuestionListSchema.safeParse(questions);
+    if (!parsedQuestions.success) {
+      throw parsedQuestions.error;
+    }
+    return parsedQuestions.data;
+  } catch (error) {
+    console.log(error)
+    throw error;
+  }
+}

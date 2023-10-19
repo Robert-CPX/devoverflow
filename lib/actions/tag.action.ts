@@ -67,3 +67,22 @@ export const getQuestionsByTagId = async (param: GetQuestionsByTagIdParams) => {
     throw error;
   }
 }
+
+/*
+  TODO:
+  priority: questions, followers | questions*60% + followers*40%
+ */
+export const getPopularTags = async () => {
+  try {
+    connectToDatabase()
+    const allTags: unknown = await TagDocument.find({}, null, { limit: 5, sort: { followers: -1 } })
+    const parsedAllTags = TagListSchema.parse(allTags)
+    if (!parsedAllTags) {
+      throw new Error('Tags not found')
+    }
+    return parsedAllTags
+  } catch (error) {
+    console.log(error)
+    throw error
+  }
+}
