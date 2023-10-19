@@ -30,7 +30,7 @@ const Home = async ({
 }) => {
   const questions = await getQuestions({ searchQuery: decodeURI(searchParams.q as string ?? ""), page: searchParams.page as number })
   return (
-    <section className='flex flex-col gap-8'>
+    <section className='flex w-full flex-col gap-8'>
       <div className='flex justify-between'>
         <h1 className='h1-bold text-dark100_light900'>All Questions</h1>
         <Link href='/ask-question'>

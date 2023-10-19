@@ -13,12 +13,12 @@ const QAStatsCard = ({ questions, answers }: QAStatsCardProps) => {
   return (
     <article className="background-light900_dark200 shadow-light100_dark100 flex flex-wrap justify-evenly gap-[44px] rounded-[10px] border border-light-700 px-[20px] py-[25px] dark:border-dark-300">
       <div className="flex flex-col items-start justify-center">
-        <p className="body-semibold">{questions}</p>
-        <p className="body-medium">Questions</p>
+        <p className="body-semibold text-dark400_light800">{questions}</p>
+        <p className="body-medium text-dark400_light800">Questions</p>
       </div>
       <div className="flex flex-col items-start justify-center">
-        <p className="body-semibold">{answers}</p>
-        <p className="body-medium">Answers</p>
+        <p className="body-semibold text-dark400_light800">{answers}</p>
+        <p className="body-medium text-dark400_light800">Answers</p>
       </div>
     </article>
   )
@@ -31,8 +31,8 @@ const BadgeStatsCard = ({ type, count }: BadgeStatsCardProps) => {
     <article className="background-light900_dark200 shadow-light100_dark100 flex flex-wrap justify-start gap-4 rounded-[10px] border border-light-700 py-5 pl-6 dark:border-dark-300">
       <Image src={icon} alt="medal" width={35} height={46} />
       <div className="flex flex-col items-start justify-center">
-        <p className="body-semibold">{count}</p>
-        <p className="body-medium">{title}</p>
+        <p className="body-semibold text-dark400_light800">{count}</p>
+        <p className="body-medium text-dark400_light800">{title}</p>
       </div>
     </article>
   )

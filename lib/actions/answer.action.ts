@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { connectToDatabase } from "../mongoose";
-import { AnswerVoteParams, CreateAnswerParams, GetAnswersParams } from "./shared";
+import { AnswerVoteParams, CreateAnswerParams, DeleteAnswerParams, GetAnswersParams } from "./shared";
 import AnswerDocument from "@/database/answer.model";
 import QuestionDocument from "@/database/question.model";
 import { AnswerListSchema } from "../validations";
@@ -108,5 +108,24 @@ export const downvoteAnswer = async (param: AnswerVoteParams) => {
     revalidatePath(path)
   } catch (error) {
     console.log(error)
+  }
+}
+
+export const deleteAnswer = async (params: DeleteAnswerParams) => {
+  try {
+    connectToDatabase()
+    const { answerId, path } = params
+    const answer: any = await AnswerDocument.findOneAndDelete({ _id: answerId })
+    if (!answer) {
+      throw new Error("Answer not found")
+    }
+    await QuestionDocument.findOneAndUpdate({ _id: answer.question }, {
+      $pull: { answers: answerId }
+    })
+    await InteractionDocument.deleteMany({ answer: answerId })
+    revalidatePath(path)
+  } catch (error) {
+    console.log(error)
+    throw error
   }
 }

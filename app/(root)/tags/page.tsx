@@ -1,6 +1,6 @@
 import { LocalSearchBar } from '@/components/shared/SearchBar'
 import React from 'react'
-import Filter from '@/components/shared/Filter'
+import { Filter } from '@/components/shared/Filter'
 import { TagFilters } from '@/constants/filter'
 import { getAllTags } from '@/lib/actions/tag.action'
 import TagCard from '@/components/shared/cards/TagCard'

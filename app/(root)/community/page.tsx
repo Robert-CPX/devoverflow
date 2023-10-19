@@ -1,6 +1,6 @@
 import { LocalSearchBar } from '@/components/shared/SearchBar'
 import React from 'react'
-import Filter from '@/components/shared/Filter'
+import { Filter } from '@/components/shared/Filter'
 import UserCard from '@/components/shared/UserCard'
 import { UserFilters } from '@/constants/filter'
 import { getAllUsers } from '@/lib/actions/user.action'

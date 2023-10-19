@@ -3,8 +3,11 @@ import RenderTag from '../RenderTag'
 import Image from 'next/image'
 import Link from 'next/link'
 import { getTimeStamp } from '@/lib/utils'
+import QAEdit from '../QAEdit'
+import { SignedIn } from '@clerk/nextjs'
 
 type QuestionCardProps = {
+  clerkId?: string;
   _id: string;
   title: string;
   tags: {
@@ -21,6 +24,7 @@ type QuestionCardProps = {
   views: number;
   answers: number;
   createdAt: Date;
+  type: 'top_post' | 'answers';
 }
 
 const Actiontem = ({ icon, number, unit }: { icon: string, number: number, unit: string }) => {
@@ -33,6 +37,7 @@ const Actiontem = ({ icon, number, unit }: { icon: string, number: number, unit:
 }
 
 const QuestionCard = ({
+  clerkId,
   _id,
   title,
   tags,
@@ -41,28 +46,38 @@ const QuestionCard = ({
   views,
   answers,
   createdAt,
+  type,
 }: QuestionCardProps) => {
   return (
     <div className="background-light900_darkgradient shadow-light100_dark100 flex w-full flex-col gap-3 rounded-lg px-11 py-9">
       <p className='text-dark400_light800 small-regular sm:hidden'>{`${getTimeStamp(createdAt)}`}</p>
-      <Link href={`/question/${_id}`}>
-        <h3 className='h3-semibold text-dark200_light900 line-clamp-2 max-h-[50px]'>{title}</h3>
-      </Link>
-      <div className='flex gap-2'>
+      <div className='flex items-start justify-between gap-3'>
+        <Link href={`/question/${_id}`} className='cursor-pointer'>
+          <h3 className='h3-semibold text-dark200_light900 line-clamp-2 max-h-[50px]'>{title}</h3>
+        </Link>
+        <SignedIn>
+          <QAEdit itemId={_id} type={type} />
+        </SignedIn>
+      </div>
+      <div className={`flex gap-2 ${type === 'answers' ? 'hidden' : ''}`}>
         {tags.map((tag) => (
           <RenderTag key={tag._id} _id={tag._id} name={tag.name} customClassName="uppercase subtle-medium rounded-md px-4 py-2" />
         ))}
       </div>
       {/* TODO: fix this */}
       <div className="mt-3 flex justify-between gap-2 max-[500px]:flex-col">
-        <Link href={`/profile/${author._id}`} className='flex justify-start gap-1'>
+        <Link href={`/profile/${author._id}`} className='flex cursor-pointer justify-start gap-1'>
           <Image src={author.picture} alt="profile pic" width={20} height={20} className='rounded-full' />
           <p className='text-dark400_light800 body-medium line-clamp-1'>{author.name}<span className='text-dark400_light800 small-regular max-sm:hidden'> {`• ${getTimeStamp(createdAt)}`}</span></p>
         </Link>
         <div className='flex gap-2'>
           <Actiontem icon='/assets/icons/like.svg' number={upvotes} unit='Votes' />
-          <Actiontem icon='/assets/icons/message.svg' number={answers} unit='Answers' />
-          <Actiontem icon='/assets/icons/eye.svg' number={views} unit='Views' />
+          {type === 'answers' ?? (
+            <>
+              <Actiontem icon='/assets/icons/message.svg' number={answers} unit='Answers' />
+              <Actiontem icon='/assets/icons/eye.svg' number={views} unit='Views' />
+            </>
+          )}
         </div>
       </div>
     </div>

@@ -2,7 +2,7 @@ import { formatDateToMonthYear } from '@/lib/utils';
 import Image from 'next/image'
 import Link from 'next/link';
 
-type UserCardProps = {
+type UserDetailCardProps = {
   picture: string;
   name: string;
   username: string;
@@ -11,7 +11,7 @@ type UserCardProps = {
   joinedAt: Date;
   bio?: string;
 }
-const UserCard = ({
+const UserDetailCard = ({
   picture,
   name,
   username,
@@ -19,7 +19,7 @@ const UserCard = ({
   location,
   joinedAt,
   bio,
-}: UserCardProps) => {
+}: UserDetailCardProps) => {
   return (
     <article className="flex flex-col gap-4 lg:flex-row">
       <Image
@@ -54,4 +54,4 @@ const UserCard = ({
   )
 }
 
-export default UserCard
+export default UserDetailCard

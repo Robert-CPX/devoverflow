@@ -1,6 +1,6 @@
 import { LocalSearchBar } from '@/components/shared/SearchBar'
 import React from 'react'
-import Filter from '@/components/shared/Filter'
+import { Filter } from '@/components/shared/Filter'
 import { QuestionFilters } from '@/constants/filter'
 import { getSavedQuestions } from '@/lib/actions/user.action'
 import { auth } from '@clerk/nextjs'
@@ -40,6 +40,7 @@ const Page = async ({
         questions.map((question) => (
           <QuestionCard
             key={question._id}
+            clerkId={userId}
             _id={question._id}
             title={question.title}
             tags={question.tags.map((tag) => ({ _id: tag._id.toString(), name: tag.name }))}

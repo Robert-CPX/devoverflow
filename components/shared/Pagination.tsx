@@ -26,7 +26,7 @@ const Pagination = ({ count }: PaginationProps) => {
   }
 
   return (
-    <div className={`flex w-full items-center justify-center gap-2 ${count === 0 ?? 'hidden'}`}>
+    <div className={`flex w-full items-center justify-center gap-2 ${count === 0 ? 'hidden' : ''}`}>
       <Button onClick={handlePrev} disabled={currentPage === 1} className='shadow-light100_darknone light-border text-dark200_light900 background-light900_dark200 disabled:text-dark400_light700 border'>
         Prev
       </Button>

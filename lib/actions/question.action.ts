@@ -3,9 +3,11 @@
 import { connectToDatabase } from "../mongoose"
 import TagDocument from "@/database/tag.model";
 import QuestionDocument from "@/database/question.model"
-import { CreateQuestionParams, GetQuestionByIdParams, GetQuestionsParams, QuestionVoteParams } from "./shared";
+import { CreateQuestionParams, DeleteQuestionParams, GetQuestionByIdParams, GetQuestionsParams, QuestionVoteParams } from "./shared";
 import { revalidatePath } from "next/cache";
 import { QuestionSchema, QuestionListSchema } from "../validations";
+import AnswerDocument from "@/database/answer.model";
+import InteractionDocument from "@/database/interaction.model";
 
 export const createQuestion = async (param: CreateQuestionParams) => {
   try {
@@ -145,6 +147,21 @@ export const downvoteQuestion = async (param: QuestionVoteParams) => {
     if (!question) {
       throw new Error("Question not found")
     }
+    revalidatePath(path)
+  } catch (error) {
+    console.log(error)
+    throw error
+  }
+}
+
+export const deleteQuestion = async (param: DeleteQuestionParams) => {
+  try {
+    connectToDatabase()
+    const { questionId, path } = param
+    await QuestionDocument.deleteOne({ _id: questionId })
+    await AnswerDocument.deleteMany({ question: questionId })
+    await InteractionDocument.deleteMany({ question: questionId })
+    await TagDocument.updateMany({ questions: questionId }, { $pull: { questions: questionId } })
     revalidatePath(path)
   } catch (error) {
     console.log(error)

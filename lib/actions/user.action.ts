@@ -2,12 +2,11 @@
 
 import UserDocument from "@/database/user.model"
 import { connectToDatabase } from "../mongoose"
-import { CreateUserParams, DeleteUserParams, GetAllUsersParams, GetUserByIdParams, UpdateUserParams, ToggleSaveQuestionParams, GetSavedQuestionsParams, GetAnswersByUserParams, GetUserStatsParams } from "./shared"
+import { CreateUserParams, DeleteUserParams, GetAllUsersParams, GetUserByIdParams, UpdateUserParams, ToggleSaveQuestionParams, GetSavedQuestionsParams, GetUserStatsParams } from "./shared"
 import { revalidatePath } from "next/cache"
 import QuestionDocument from "@/database/question.model"
 import { UserListSchema, UserSchema, UserAllQuestionsSchema, QuestionListSchema } from "../validations"
 import AnswerDocument from "@/database/answer.model"
-import InteractionDocument from "@/database/interaction.model"
 
 export const getUsereById = async (params: GetUserByIdParams) => {
   try {
@@ -183,7 +182,6 @@ export const getQuestionsByUser = async (param: GetUserStatsParams) => {
       .sort({ views: -1, upvotes: -1 })
       .populate({ path: "tags", select: "_id name" })
       .populate("author");
-    console.log(questions)
     const parsedQuestions = QuestionListSchema.safeParse(questions);
     if (!parsedQuestions.success) {
       console.log(parsedQuestions.error)
@@ -196,15 +194,22 @@ export const getQuestionsByUser = async (param: GetUserStatsParams) => {
   }
 }
 
-export const getAnswersByUser = async (param: GetAnswersByUserParams) => {
+export const getAnswersByUser = async (param: GetUserStatsParams) => {
   try {
     connectToDatabase();
     const { userId, page = 1, pageSize = 10 } = param;
-    const questionId = await InteractionDocument.find({ user: userId, action: 'answered' })
+    const questionIds = await AnswerDocument.find({ author: userId })
       .limit(pageSize)
       .skip((page - 1) * pageSize)
       .distinct('question')
-    const questions: unknown = await QuestionDocument.find({ _id: { $in: questionId } })
+    // const questionIds = await InteractionDocument.find({ user: userId, action: 'answered' })
+    //   .limit(pageSize)
+    //   .skip((page - 1) * pageSize)
+    //   .distinct('question')
+    const questions: unknown = await QuestionDocument.find({ _id: { $in: questionIds } })
+      .sort({ views: -1, upvotes: -1 })
+      .populate({ path: "tags", select: "_id name" })
+      .populate("author");
     const parsedQuestions = QuestionListSchema.safeParse(questions);
     if (!parsedQuestions.success) {
       throw parsedQuestions.error
