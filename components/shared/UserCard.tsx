@@ -1,8 +1,8 @@
 import React from 'react'
 import Image from 'next/image'
-import RenderTag from './RenderTag';
+// import RenderTag from './RenderTag';
 import Link from 'next/link';
-import { getTopInteractedTags } from '@/lib/actions/tag.action';
+// import { getTopInteractedTags } from '@/lib/actions/tag.action';
 
 type UserCardProps = {
   _id: string;
@@ -14,7 +14,7 @@ type UserCardProps = {
 const UserCard = async ({
   _id, picture, name, username
 }: UserCardProps) => {
-  const interactedTags = await getTopInteractedTags({ userId: _id })
+  // const interactedTags = await getTopInteractedTags({ userId: _id })
 
   return (
     <Link href={`/profile/${_id}`} className='flex-center light-border background-light900_dark200 shadow-light100_darknone h-[280px] w-[260px] flex-col gap-5 rounded-[10px] border p-[30px]'>
