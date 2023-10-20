@@ -1,6 +1,6 @@
 'use client'
 
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import Image from 'next/image'
 import { Input } from '@/components/ui/input'
 import { useRouter, useSearchParams } from 'next/navigation'
@@ -27,21 +27,28 @@ const GlobalSearchBar = () => {
 type LocalSearchType = "Question" | "User" | "Tag"
 
 const LocalSearchBar = ({ type }: { type: LocalSearchType }) => {
+  const [query, setQuery] = useState("")
+  const [debouncedQuery, setDebouncedQuery] = useState("")
   const router = useRouter()
   const searchParams = useSearchParams()
 
-  const handleInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") {
-      const tagInput = e.target as HTMLInputElement
-      const params = new URLSearchParams(searchParams.toString())
-      if (tagInput.value === "") {
-        params.delete('q')
-      } else {
-        params.set('q', encodeURI(tagInput.value))
-      }
-      router.push(`?${params}`)
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setQuery(debouncedQuery)
+    }, 500)
+    return () => clearTimeout(timer)
+  }, [debouncedQuery])
+
+  useEffect(() => {
+    const params = new URLSearchParams(searchParams.toString())
+    if (query === "") {
+      params.delete('q')
+    } else {
+      params.set('q', encodeURI(query))
     }
-  }
+    router.push(`?${params}`)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [query])
 
   return (
     <div className='background-light800_darkgradient relative flex min-h-[56px] w-full items-center justify-start gap-1 rounded-lg px-4'>
@@ -53,7 +60,7 @@ const LocalSearchBar = ({ type }: { type: LocalSearchType }) => {
       />
       <Input
         type='text'
-        onKeyDown={handleInputKeyDown}
+        onChange={(e) => setDebouncedQuery(e.target.value)}
         className='text-dark400_light900 no-focus placeholder paragraph-regular border-none bg-transparent outline-none'
         placeholder={`${type === "Question" ? "Search questions..." : type === "User" ? "Search amazing minds here..." : "Search tag questions..."}`}
       />
