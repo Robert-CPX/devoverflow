@@ -39,9 +39,24 @@ const Influence = ({
   </div>
 )
 
-const Page = async ({ params }: { params: { id: string } }) => {
+const Page = async ({
+  params,
+  searchParams
+}: {
+  params: { id: string },
+  searchParams: {
+    [key: string]: string | number | undefined
+  }
+}) => {
   const question = await getQuestionById({ questionId: params.id })
-  const answers = await getAnswers({ questionId: params.id })
+  const page = searchParams.page as number
+
+  const answers = await getAnswers({
+    questionId: params.id,
+    page,
+    sortBy: decodeURI(searchParams.filter as string ?? ""),
+  })
+
   const { userId } = auth()
   if (!userId) return (<p>Not logged in</p>)
   const mongooseUser = await getUsereById({ userId })
@@ -82,7 +97,7 @@ const Page = async ({ params }: { params: { id: string } }) => {
           downvotes={answer.downvotes}
           author={{ clerkId: answer.author.clerkId, _id: answer.author._id.toString(), name: answer.author.name, picture: answer.author.picture }}
           userId={mongooseUser._id}
-          createdAt={answer.createdAt}
+          createdAt={getTimeStamp(answer.createdAt)}
         />
       ))}
       <AnswerForm question={question.content} questionId={question._id} userId={mongooseUser._id} />

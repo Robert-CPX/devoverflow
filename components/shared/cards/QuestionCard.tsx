@@ -55,9 +55,11 @@ const QuestionCard = ({
         <Link href={`/question/${_id}`} className='cursor-pointer'>
           <h3 className='h3-semibold text-dark200_light900 line-clamp-2 max-h-[50px]'>{title}</h3>
         </Link>
-        <SignedIn>
-          <QAEdit itemId={_id} type={type ?? "top_post"} />
-        </SignedIn>
+        {type !== undefined && (
+          <SignedIn>
+            <QAEdit itemId={_id} type={type ?? "top_post"} />
+          </SignedIn>
+        )}
       </div>
       <div className={`flex gap-2 ${type === 'answers' ? 'hidden' : ''}`}>
         {tags.map((tag) => (
@@ -72,7 +74,7 @@ const QuestionCard = ({
         </Link>
         <div className='flex gap-2'>
           <Actiontem icon='/assets/icons/like.svg' number={upvotes} unit='Votes' />
-          {type === 'answers' ?? (
+          {type !== 'answers' && (
             <>
               <Actiontem icon='/assets/icons/message.svg' number={answers} unit='Answers' />
               <Actiontem icon='/assets/icons/eye.svg' number={views} unit='Views' />

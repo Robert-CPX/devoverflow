@@ -12,7 +12,7 @@ type AnswerCardProps = {
     name: string;
     picture: string;
   }
-  createdAt: Date;
+  createdAt: string;
   upvotes: string[];
   downvotes: string[];
   content: string;

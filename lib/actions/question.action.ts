@@ -81,7 +81,7 @@ export const getQuestions = async (param: GetQuestionsParams) => {
       case 'newest': filterCmd = { createdAt: -1 }; break;
       case 'recommended': filterCmd = { upvotes: 1 }; break;
       case 'frequent': filterCmd = { views: -1 }; break;
-      case 'unanswered': filterCmd = { answers: -1 }; break;
+      case 'unanswered': filterCmd = { answers: 1 }; break;
     }
     const questions: unknown = await QuestionDocument.find(searchCmd, null, { skip: (page - 1) * pageSize, limit: pageSize, sort: filterCmd })
       .populate({ path: "tags", select: "_id name" })

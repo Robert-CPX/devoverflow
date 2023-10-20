@@ -38,13 +38,19 @@ export const createAnswer = async (param: CreateAnswerParams) => {
 export const getAnswers = async (param: GetAnswersParams) => {
   try {
     connectToDatabase()
-    const { questionId } = param;
-    const answers: unknown = await AnswerDocument.find({ question: questionId })
+    const { questionId, sortBy, page = 1, pageSize = 10 } = param;
+    let filterCmd = {}
+    switch (sortBy) {
+      case 'highestUpvotes': filterCmd = { upvotes: -1 }; break;
+      case 'lowestUpvotes': filterCmd = { upvotes: 1 }; break;
+      case 'recent': filterCmd = { createdAt: -1 }; break;
+      case 'old': filterCmd = { createdAt: 1 }; break;
+    }
+    const answers: unknown = await AnswerDocument.find({ question: questionId }, null, { skip: (page - 1) * pageSize, limit: pageSize, sort: filterCmd })
       .populate({
         path: "author",
         select: "name picture _id clerkId",
       })
-      .sort({ createdAt: -1 })
     const parsedAnswers = AnswerListSchema.safeParse(answers);
     if (!parsedAnswers.success) {
       throw parsedAnswers.error;

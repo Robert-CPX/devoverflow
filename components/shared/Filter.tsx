@@ -32,7 +32,7 @@ const Filter = ({ filters, customClassName }: FilterProps) => {
 
   return (
     <Select onValueChange={handleFilter}>
-      <SelectTrigger className="background-light800_darkgradient text-dark500_light700 light-border h-full min-h-[56px] w-[180px] max-sm:w-full">
+      <SelectTrigger className="background-light800_darkgradient text-dark500_light700 light-border h-full min-h-[56px] w-[200px] max-sm:w-full">
         <SelectValue placeholder="Select a Filter" />
       </SelectTrigger>
       <SelectContent className='background-light900_dark200 text-dark400_light900 light-border'>
@@ -53,8 +53,13 @@ const HomeFilter = () => {
 
   const handleFilter = (e: React.MouseEvent<HTMLButtonElement>, value: string) => {
     const params = new URLSearchParams(searchParams.toString())
-    params.set('filter', encodeURI(value))
-    setActive(value)
+    if (value === params.get('filter')) {
+      params.delete('filter')
+      setActive("")
+    } else {
+      params.set('filter', encodeURI(value))
+      setActive(value)
+    }
     router.push(`?${params}`)
   }
 
