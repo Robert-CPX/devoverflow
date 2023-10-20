@@ -5,7 +5,7 @@ import TagDocument from "@/database/tag.model";
 import QuestionDocument from "@/database/question.model"
 import { CreateQuestionParams, DeleteQuestionParams, EditQuestionParams, GetQuestionByIdParams, GetQuestionsParams, QuestionVoteParams } from "./shared";
 import { revalidatePath } from "next/cache";
-import { QuestionSchema, QuestionListSchema } from "../validations";
+import { QuestionSchema, QuestionListSchema, TopQuestionListSchema } from "../validations";
 import AnswerDocument from "@/database/answer.model";
 import InteractionDocument from "@/database/interaction.model";
 
@@ -197,17 +197,24 @@ export const deleteQuestion = async (param: DeleteQuestionParams) => {
   }
 }
 
-/*
-  TODO:
-  priority: answers, saves, upvotes, views answers*50% + saves*20% + upvotes*20% + views*10%
- */
 export const getTopQuestions = async () => {
   try {
     connectToDatabase()
-    const questions: unknown = await QuestionDocument.find({}, null, { limit: 5, sort: { answers: -1 } })
-      .populate({ path: "tags", select: "_id name" })
-      .populate("author");
-    const parsedQuestions = QuestionListSchema.safeParse(questions);
+    const questions: unknown = await QuestionDocument.aggregate([
+      { $limit: 5 },
+      {
+        $project: {
+          "_id": 1,
+          "views": 1,
+          "title": 1,
+          "upvotesNum": { $size: "$upvotes" },
+          "savesNum": { $size: "$saves" },
+          "answersNum": { $size: "$answers" },
+        }
+      },
+      { $sort: { "answersNum": -1, "upvotesNum": -1, "savesNum": -1, "views": -1 } },
+    ])
+    const parsedQuestions = TopQuestionListSchema.safeParse(questions);
     if (!parsedQuestions.success) {
       throw parsedQuestions.error;
     }

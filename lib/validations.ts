@@ -11,6 +11,17 @@ export const AnswerFormSchema = z.object({
   answer: z.string().nonempty(),
 })
 
+export const AnswerSchema = z.object({
+  _id: z.coerce.string(),
+  content: z.string().nonempty(),
+  upvotes: z.coerce.string().array(),
+  downvotes: z.coerce.string().array(),
+  author: z.custom<{ _id: ObjectId, clerkId: string, name: string, picture: string }>(),
+  createdAt: z.date(),
+})
+
+export const AnswerListSchema = z.array(AnswerSchema)
+
 export const UserSchema = z.object({
   _id: z.coerce.string(),
   clerkId: z.string(),
@@ -41,16 +52,14 @@ const TagSchema = z.object({
 
 export const TagListSchema = z.array(TagSchema)
 
-export const AnswerSchema = z.object({
+export const PopularTagSchema = z.object({
   _id: z.coerce.string(),
-  content: z.string().nonempty(),
-  upvotes: z.coerce.string().array(),
-  downvotes: z.coerce.string().array(),
-  author: z.custom<{ _id: ObjectId, clerkId: string, name: string, picture: string }>(),
-  createdAt: z.date(),
+  name: z.string(),
+  questionsNum: z.number(),
+  followersNum: z.number(),
 })
 
-export const AnswerListSchema = z.array(AnswerSchema)
+export const PopularTagListSchema = z.array(PopularTagSchema)
 
 export const QuestionSchema = z.object({
   _id: z.coerce.string(),
@@ -101,3 +110,15 @@ export const EditProfileSchema = z.object({
   location: z.string().min(3).max(30).optional(),
   bio: z.string().min(3).max(180).optional(),
 })
+
+export const TopQuestionSchema = z.object({
+  _id: z.coerce.string(),
+  title: z.string(),
+  views: z.number(),
+  answersNum: z.number(),
+  upvotesNum: z.number(),
+  downvotesNum: z.number().optional(),
+  savesNum: z.number(),
+})
+
+export const TopQuestionListSchema = z.array(TopQuestionSchema)

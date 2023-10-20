@@ -13,7 +13,7 @@ type TopQuestionsProp = {
 type PopularTagsProp = {
   _id: string;
   name: string;
-  followers: string[];
+  followersNum: number;
 }
 
 const TopQuestions = ({
@@ -51,7 +51,7 @@ const PopularTags = ({
           return (
             <div key={item.name} className='flex h-[30px] w-full cursor-pointer items-center justify-between'>
               <RenderTag _id={item._id} name={item.name} customClassName="uppercase subtle-medium rounded-md px-4 py-2" />
-              <p className='small-medium text-dark500_light700'>{item.followers.length}</p>
+              <p className='small-medium text-dark500_light700'>{item.followersNum}</p>
             </div>
           )
         })}

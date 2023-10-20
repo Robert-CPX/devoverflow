@@ -3,7 +3,7 @@
 import TagDocument from "@/database/tag.model"
 import { connectToDatabase } from "../mongoose"
 import { GetAllTagsParams, GetQuestionsByTagIdParams, GetTopInteractedTagsParams } from "./shared"
-import { TagAllQuestionsSchema, TagListSchema } from "../validations"
+import { PopularTagListSchema, TagAllQuestionsSchema, TagListSchema } from "../validations"
 
 export const getAllTags = async (params: GetAllTagsParams) => {
   try {
@@ -68,19 +68,19 @@ export const getQuestionsByTagId = async (param: GetQuestionsByTagIdParams) => {
   }
 }
 
-/*
-  TODO:
-  priority: questions, followers | questions*60% + followers*40%
- */
 export const getPopularTags = async () => {
   try {
     connectToDatabase()
-    const allTags: unknown = await TagDocument.find({}, null, { limit: 5, sort: { followers: -1 } })
-    const parsedAllTags = TagListSchema.parse(allTags)
-    if (!parsedAllTags) {
-      throw new Error('Tags not found')
+    const populatTags: unknown = await TagDocument.aggregate([
+      { $limit: 5 },
+      { $project: { name: 1, questionsNum: { $size: "$questions" }, followersNum: { $size: "$followers" } } },
+      { $sort: { questionsNum: -1, followersNum: -1 } }
+    ])
+    const parsedResult = PopularTagListSchema.safeParse(populatTags);
+    if (!parsedResult.success) {
+      throw parsedResult.error;
     }
-    return parsedAllTags
+    return parsedResult.data;
   } catch (error) {
     console.log(error)
     throw error
