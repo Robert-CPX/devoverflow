@@ -27,15 +27,16 @@ const GlobalSearchBar = () => {
 type LocalSearchType = "Question" | "User" | "Tag"
 
 const LocalSearchBar = ({ type }: { type: LocalSearchType }) => {
-  const [query, setQuery] = useState("")
-  const [debouncedQuery, setDebouncedQuery] = useState("")
-  const router = useRouter()
   const searchParams = useSearchParams()
+  const q = searchParams.get('q')
+  const [debouncedQuery, setDebouncedQuery] = useState(q || "")
+  const router = useRouter()
+  const [query, setQuery] = useState(debouncedQuery || "")
 
   useEffect(() => {
     const timer = setTimeout(() => {
       setQuery(debouncedQuery)
-    }, 500)
+    }, 1000)
     return () => clearTimeout(timer)
   }, [debouncedQuery])
 
@@ -47,8 +48,7 @@ const LocalSearchBar = ({ type }: { type: LocalSearchType }) => {
       params.set('q', encodeURI(query))
     }
     router.push(`?${params}`)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [query])
+  }, [query, router, searchParams])
 
   return (
     <div className='background-light800_darkgradient relative flex min-h-[56px] w-full items-center justify-start gap-1 rounded-lg px-4'>
@@ -60,6 +60,7 @@ const LocalSearchBar = ({ type }: { type: LocalSearchType }) => {
       />
       <Input
         type='text'
+        value={debouncedQuery}
         onChange={(e) => setDebouncedQuery(e.target.value)}
         className='text-dark400_light900 no-focus placeholder paragraph-regular border-none bg-transparent outline-none'
         placeholder={`${type === "Question" ? "Search questions..." : type === "User" ? "Search amazing minds here..." : "Search tag questions..."}`}

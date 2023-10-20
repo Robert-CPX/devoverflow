@@ -15,8 +15,18 @@ const SearchSection = () => {
   )
 }
 
-const Page = async () => {
-  const result = await getAllUsers({})
+const Page = async ({
+  searchParams
+}: {
+  searchParams: {
+    [key: string]: string | number
+  }
+}) => {
+  const result = await getAllUsers({
+    searchQuery: decodeURI(searchParams.q as string ?? ""),
+    filter: decodeURI(searchParams.filter as string ?? ""),
+    page: searchParams.page as number
+  })
   return (
     <section className='flex flex-col gap-8'>
       <h1 className='h1-bold text-dark100_light900'>All Users</h1>

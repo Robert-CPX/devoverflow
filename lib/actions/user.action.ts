@@ -73,8 +73,21 @@ export const deleteUser = async (params: DeleteUserParams) => {
 export const getAllUsers = async (params: GetAllUsersParams) => {
   try {
     connectToDatabase()
-    const allUsers: unknown = await UserDocument.find({})
-      .sort({ createdAt: -1 });
+    const { page = 1, pageSize = 10, filter, searchQuery } = params
+
+    let searchCmd = {}
+    if (searchQuery) {
+      const regexValue = { $regex: new RegExp(searchQuery, "i") }
+      searchCmd = { $or: [{ name: regexValue }, { username: regexValue }] }
+    }
+    let filterCmd = {}
+    switch (filter) {
+      case 'new_users': filterCmd = { joinedAt: -1 }; break;
+      case 'old_users': filterCmd = { joinedAt: 1 }; break;
+      case 'top_contributors': filterCmd = { reputation: -1 }; break;
+    }
+
+    const allUsers: unknown = await UserDocument.find(searchCmd, null, { skip: (page - 1) * pageSize, limit: pageSize, sort: filterCmd })
     const parsedAllUsers = UserListSchema.safeParse(allUsers)
     if (!parsedAllUsers.success) {
       throw new Error('Error parsing all users')

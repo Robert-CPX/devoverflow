@@ -73,7 +73,8 @@ export const getQuestions = async (param: GetQuestionsParams) => {
     const { page = 1, pageSize = 10, searchQuery, filter } = param;
     let searchCmd = {}
     if (searchQuery) {
-      searchCmd = { title: { $regex: new RegExp(searchQuery, "i") } }
+      const regexValue = { $regex: new RegExp(searchQuery, "i") }
+      searchCmd = { $or: [{ title: regexValue }, { content: regexValue }] }
     }
     let filterCmd = {}
     switch (filter) {
