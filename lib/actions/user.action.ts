@@ -135,6 +135,7 @@ export const getSavedQuestions = async (params: GetSavedQuestionsParams) => {
       case 'most_recent': filterCmd = { createdAt: -1 }; break;
       case 'oldest': filterCmd = { createdAt: 1 }; break;
       case 'most_voted': filterCmd = { upvotes: -1 }; break;
+      case 'most_viewed': filterCmd = { views: -1 }; break;
       case 'most_answered': filterCmd = { answers: -1 }; break;
     }
     let searchCmd = {}

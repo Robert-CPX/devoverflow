@@ -32,7 +32,7 @@ const Page = async ({
       <h1 className='h1-bold text-dark100_light900'>All Users</h1>
       <SearchSection />
       {result.parsedAllUsers.data.length > 0 ? (
-        <div className='grid gap-5 min-[400px]:grid-cols-1 min-[550px]:grid-cols-2 min-[800px]:grid-cols-3'>
+        <div className='flex w-full flex-wrap justify-start gap-5'>
           {result.parsedAllUsers.data.map((user) => (
             <UserCard key={user._id}
               _id={user._id}

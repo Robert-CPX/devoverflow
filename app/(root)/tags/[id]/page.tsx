@@ -3,16 +3,21 @@ import { LocalSearchBar } from '@/components/shared/SearchBar'
 import QuestionCard from '@/components/shared/cards/QuestionCard'
 import NoResult from '@/components/shared/NoResult'
 import { getQuestionsByTagId } from '@/lib/actions/tag.action'
+import Pagination from '@/components/shared/Pagination'
 
 const Page = async ({
   params,
   searchParams,
 }: {
   params: { id: string };
-  searchParams: { [key: string]: string | undefined }
+  searchParams: { [key: string]: string | number | undefined }
 }) => {
-
-  const { name, questions } = await getQuestionsByTagId({ tagId: params.id, searchQuery: decodeURI(searchParams.q ?? '') })
+  const page = searchParams.page as number
+  const { name, questions } = await getQuestionsByTagId({
+    tagId: params.id,
+    page,
+    searchQuery: decodeURI(searchParams.q as string ?? '')
+  })
   return (
     <section className='flex flex-col gap-8'>
       <h1 className='h1-bold text-dark100_light900'>{name}</h1>
@@ -41,7 +46,7 @@ const Page = async ({
           />
         </div>
       )}
-      {/* <Pagination /> */}
+      <Pagination page={page} count={questions.length} />
     </section>
   )
 }

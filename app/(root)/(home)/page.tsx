@@ -28,10 +28,11 @@ const Home = async ({
     [key: string]: string | number | undefined
   }
 }) => {
+  const page = searchParams.page as number
   const questions = await getQuestions({
     searchQuery: decodeURI(searchParams.q as string ?? ""),
     filter: decodeURI(searchParams.filter as string ?? ""),
-    page: searchParams.page as number
+    page
   })
   return (
     <section className='flex w-full flex-col gap-8'>
@@ -67,7 +68,7 @@ const Home = async ({
           />
         </div>
       )}
-      <Pagination count={questions.length} />
+      <Pagination page={page} count={questions.length} />
     </section>
   )
 }

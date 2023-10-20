@@ -6,9 +6,11 @@ import { useRouter, useSearchParams } from 'next/navigation'
 
 type PaginationProps = {
   count: number
+  page: number
 }
-const Pagination = ({ count }: PaginationProps) => {
-  const [currentPage, setCurrentPage] = useState(1)
+
+const Pagination = ({ count, page = 1 }: PaginationProps) => {
+  const [currentPage, setCurrentPage] = useState(page)
   const router = useRouter()
   const searchParams = useSearchParams()
   const handlePrev = () => {

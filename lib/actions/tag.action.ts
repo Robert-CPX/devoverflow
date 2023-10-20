@@ -2,14 +2,26 @@
 
 import TagDocument from "@/database/tag.model"
 import { connectToDatabase } from "../mongoose"
-import { GetAllTagsParams, GetQuestionsByTagIdParams, GetTopInteractedTagsParams } from "./shared"
+import { GetAllTagsParams, GetQuestionsByTagIdParams } from "./shared"
 import { PopularTagListSchema, TagAllQuestionsSchema, TagListSchema } from "../validations"
 
 export const getAllTags = async (params: GetAllTagsParams) => {
   try {
     connectToDatabase()
-    const allTags: unknown = await TagDocument.find({})
-    const parsedAllTags = TagListSchema.parse(allTags)
+    const { page = 1, pageSize = 10, filter, searchQuery } = params
+    let searchCmd = {}
+    if (searchQuery) {
+      searchCmd = { name: { $regex: new RegExp(searchQuery, "i") } }
+    }
+    let filterCmd = {}
+    switch (filter) {
+      case 'popular': filterCmd = { followers: -1 }; break;
+      case 'recent': filterCmd = { createdAt: -1 }; break;
+      case 'name': filterCmd = { name: 1 }; break;
+      case 'old': filterCmd = { createdAt: 1 }; break;
+    }
+    const allTags: unknown = await TagDocument.find(searchCmd, null, { skip: (page - 1) * pageSize, limit: pageSize, sort: filterCmd })
+    const parsedAllTags = TagListSchema.parse(allTags).filter(tag => tag.questions.length > 0)
     if (!parsedAllTags) {
       throw new Error('Tags not found')
     }
@@ -20,19 +32,20 @@ export const getAllTags = async (params: GetAllTagsParams) => {
   }
 }
 
-export const getTopInteractedTags = async (params: GetTopInteractedTagsParams) => {
+export const getUserTags = async (params: GetAllTagsParams) => {
   try {
-    // connectToDatabase()
-    // const { userId, limit = 3 } = params
-    // const allTags: unknown = await TagDocument.find(
-    //   { creator: userId },
-    //   { max: limit }
-    // )
-    // const parsedAllTags = TagsSchema.parse(allTags)
-    // if (!parsedAllTags) {
-    //   throw new Error('Tags not found')
-    // }
-    // return parsedAllTags
+    connectToDatabase()
+    const { page = 1, pageSize = 3, searchQuery } = params
+    let searchCmd = {}
+    if (searchQuery) {
+      searchCmd = { creator: searchQuery }
+    }
+    const allTags: unknown = await TagDocument.find(searchCmd, null, { skip: (page - 1) * pageSize, limit: pageSize })
+    const parsedAllTags = TagListSchema.parse(allTags)
+    if (!parsedAllTags) {
+      throw new Error('Tags not found')
+    }
+    return parsedAllTags
   } catch (error) {
     console.log(error)
     throw error

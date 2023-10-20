@@ -5,6 +5,7 @@ import { TagFilters } from '@/constants/filter'
 import { getAllTags } from '@/lib/actions/tag.action'
 import TagCard from '@/components/shared/cards/TagCard'
 import NoResult from '@/components/shared/NoResult'
+import Pagination from '@/components/shared/Pagination'
 
 const SearchSection = () => {
   return (
@@ -15,21 +16,32 @@ const SearchSection = () => {
   )
 }
 
-const Page = async () => {
-  const allTags = await getAllTags({})
+const Page = async ({
+  searchParams
+}: {
+  searchParams: {
+    [key: string]: string | number | undefined
+  }
+}) => {
+  const page = searchParams.page as number
+  const allTags = await getAllTags({
+    page,
+    searchQuery: decodeURI(searchParams.q as string ?? ""),
+    filter: decodeURI(searchParams.filter as string ?? "")
+  })
   return (
     <section className='flex flex-col gap-8'>
       <h1 className='h1-bold text-dark100_light900'>All Tags</h1>
       <SearchSection />
       {allTags.length > 0 ? (
-        <div className='grid gap-5 min-[400px]:grid-cols-1 min-[550px]:grid-cols-2 min-[800px]:grid-cols-3'>
+        <div className='flex flex-wrap justify-start gap-5'>
           {allTags.map((tag) => (
             <TagCard
               key={tag._id}
               _id={tag._id}
               name={tag.name}
               description={tag.description}
-              followers={tag.followers.length}
+              followers={tag.questions.length}
             />
           ))}
         </div>
@@ -41,6 +53,7 @@ const Page = async () => {
           linkText='Ask a Question'
         />
       )}
+      <Pagination page={page} count={allTags.length} />
     </section >
   )
 }

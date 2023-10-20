@@ -19,9 +19,10 @@ const Page = async ({
   }
 }) => {
   const { userId: clerkId } = auth()
+  const page = searchParams.page ?? 1
   const { user, totalAnswers, totalQuestions } = await getUserInfo({ userId: params.id })
-  const userQuestions = await getQuestionsByUser({ userId: user._id, page: searchParams.page })
-  const userAnswerdQuestions = await getAnswersByUser({ userId: user._id, page: searchParams.page })
+  const userQuestions = await getQuestionsByUser({ userId: user._id, page })
+  const userAnswerdQuestions = await getAnswersByUser({ userId: user._id, page })
   return (
     <section className='flex flex-col items-start gap-5'>
       <div className='relative flex w-full'>
@@ -86,7 +87,7 @@ const Page = async ({
                 </div>
               )}
               <div className='mt-2 flex'>
-                <Pagination count={userQuestions.length} />
+                <Pagination page={page} count={userQuestions.length} />
               </div>
             </div>
           </TabsContent>
@@ -119,7 +120,7 @@ const Page = async ({
                 </div>
               )}
               <div className='mt-2 flex'>
-                <Pagination count={userAnswerdQuestions.length} />
+                <Pagination page={page} count={userAnswerdQuestions.length} />
               </div>
             </div>
           </TabsContent>
