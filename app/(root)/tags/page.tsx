@@ -23,8 +23,8 @@ const Page = async ({
     [key: string]: string | number | undefined
   }
 }) => {
-  const page = searchParams.page as number
-  const allTags = await getAllTags({
+  const page = searchParams.page as number < 1 ? 1 : searchParams.page as number
+  const { allTags, isNext } = await getAllTags({
     page,
     searchQuery: decodeURI(searchParams.q as string ?? ""),
     filter: decodeURI(searchParams.filter as string ?? "")
@@ -53,7 +53,9 @@ const Page = async ({
           linkText='Ask a Question'
         />
       )}
-      <Pagination page={page} count={allTags.length} />
+      <div className={allTags.length === 0 ? 'hidden' : ''}>
+        <Pagination page={page} isNext={isNext} />
+      </div>
     </section >
   )
 }

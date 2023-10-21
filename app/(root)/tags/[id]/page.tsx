@@ -12,8 +12,8 @@ const Page = async ({
   params: { id: string };
   searchParams: { [key: string]: string | number | undefined }
 }) => {
-  const page = searchParams.page as number
-  const { name, questions } = await getQuestionsByTagId({
+  const page = searchParams.page as number < 1 ? 1 : searchParams.page as number
+  const { name, questions, isNext } = await getQuestionsByTagId({
     tagId: params.id,
     page,
     searchQuery: decodeURI(searchParams.q as string ?? '')
@@ -46,7 +46,9 @@ const Page = async ({
           />
         </div>
       )}
-      <Pagination page={page} count={questions.length} />
+      <div className={questions.length === 0 ? 'hidden' : ''}>
+        <Pagination page={page} isNext={isNext} />
+      </div>
     </section>
   )
 }

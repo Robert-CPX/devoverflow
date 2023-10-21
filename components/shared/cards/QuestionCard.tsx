@@ -10,7 +10,7 @@ type QuestionCardProps = {
   clerkId?: string;
   _id: string;
   title: string;
-  tags: {
+  tags?: {
     _id: string;
     name: string;
   }[];
@@ -20,9 +20,9 @@ type QuestionCardProps = {
     name: string;
     picture: string;
   };
-  upvotes: number;
+  upvotes?: number;
   views: number;
-  answers: number;
+  answers?: number;
   createdAt: Date;
   type?: 'top_post' | 'answers';
 }
@@ -62,7 +62,7 @@ const QuestionCard = ({
         )}
       </div>
       <div className={`flex gap-2 ${type === 'answers' ? 'hidden' : ''}`}>
-        {tags.map((tag) => (
+        {tags?.map((tag) => (
           <RenderTag key={tag._id} _id={tag._id} name={tag.name} customClassName="uppercase subtle-medium rounded-md px-4 py-2" />
         ))}
       </div>
@@ -73,10 +73,10 @@ const QuestionCard = ({
           <p className='text-dark400_light800 body-medium line-clamp-1'>{author.name}<span className='text-dark400_light800 small-regular max-sm:hidden'> {`• ${getTimeStamp(createdAt)}`}</span></p>
         </Link>
         <div className='flex gap-2'>
-          <Actiontem icon='/assets/icons/like.svg' number={upvotes} unit='Votes' />
+          <Actiontem icon='/assets/icons/like.svg' number={upvotes ?? 0} unit='Votes' />
           {type !== 'answers' && (
             <>
-              <Actiontem icon='/assets/icons/message.svg' number={answers} unit='Answers' />
+              <Actiontem icon='/assets/icons/message.svg' number={answers ?? 0} unit='Answers' />
               <Actiontem icon='/assets/icons/eye.svg' number={views} unit='Views' />
             </>
           )}

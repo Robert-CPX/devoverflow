@@ -21,8 +21,8 @@ const Page = async ({
   const { userId: clerkId } = auth()
   const page = searchParams.page ?? 1
   const { user, totalAnswers, totalQuestions } = await getUserInfo({ userId: params.id })
-  const userQuestions = await getQuestionsByUser({ userId: user._id, page })
-  const userAnswerdQuestions = await getAnswersByUser({ userId: user._id, page })
+  const { questions: userQuestions, isNext: questionIsNext } = await getQuestionsByUser({ userId: user._id, page })
+  const { answers: userAnswerdQuestions, isNext: answerIsNext } = await getAnswersByUser({ userId: user._id, page })
   return (
     <section className='flex flex-col items-start gap-5'>
       <div className='relative flex w-full'>
@@ -86,26 +86,23 @@ const Page = async ({
                   />
                 </div>
               )}
-              <div className='mt-2 flex'>
-                <Pagination page={page} count={userQuestions.length} />
+              <div className={`mt-2 flex ${userQuestions.length === 0 ? 'hidden' : ''}`}>
+                <Pagination page={page} isNext={questionIsNext} />
               </div>
             </div>
           </TabsContent>
           <TabsContent value="answers">
             <div className='flex w-full flex-col gap-6'>
               {userAnswerdQuestions.length > 0 ? (
-                userAnswerdQuestions.map((question) => (
+                userAnswerdQuestions.map((answer) => (
                   <QuestionCard
-                    key={question._id}
+                    key={answer.question._id}
                     clerkId={clerkId ?? ""}
-                    _id={question._id}
-                    title={question.title}
-                    tags={question.tags.map((tag) => ({ _id: tag._id.toString(), name: tag.name }))}
-                    author={question.author}
-                    upvotes={question.upvotes.length}
-                    views={question.views}
-                    answers={question.answers.length}
-                    createdAt={question.createdAt}
+                    _id={answer.question._id}
+                    title={answer.question.title}
+                    author={answer.author}
+                    views={answer.question.views}
+                    createdAt={answer.createdAt}
                     type='answers'
                   />
                 ))
@@ -119,8 +116,8 @@ const Page = async ({
                   />
                 </div>
               )}
-              <div className='mt-2 flex'>
-                <Pagination page={page} count={userAnswerdQuestions.length} />
+              <div className={`mt-2 flex ${userAnswerdQuestions.length === 0 ? 'hidden' : ''}`}>
+                <Pagination page={page} isNext={answerIsNext} />
               </div>
             </div>
           </TabsContent>

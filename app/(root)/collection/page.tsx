@@ -7,6 +7,7 @@ import { auth } from '@clerk/nextjs'
 import { redirect } from 'next/navigation'
 import NoResult from '@/components/shared/NoResult'
 import QuestionCard from '@/components/shared/cards/QuestionCard'
+import Pagination from '@/components/shared/Pagination'
 
 const SearchSection = () => {
   return (
@@ -21,15 +22,17 @@ const Page = async ({
   searchParams
 }: {
   searchParams: {
-    [key: string]: string | undefined
+    [key: string]: string | number | undefined
   }
 }) => {
   const { userId } = auth()
   if (!userId) redirect('/sign-in')
-  const questions = await getSavedQuestions({
+  const page = searchParams.page as number < 1 ? 1 : searchParams.page as number
+  const { questions, isNext } = await getSavedQuestions({
     clerkId: userId,
-    searchQuery: decodeURI(searchParams.q ?? ""),
-    filter: decodeURI(searchParams.filter ?? "")
+    searchQuery: decodeURI(searchParams.q as string ?? ""),
+    filter: decodeURI(searchParams.filter as string ?? ""),
+    page
   })
 
   return (
@@ -61,6 +64,9 @@ const Page = async ({
           />
         </div>
       )}
+      <div className={questions.length === 0 ? 'hidden' : ''}>
+        <Pagination page={page} isNext={isNext} />
+      </div>
     </section >
   )
 }

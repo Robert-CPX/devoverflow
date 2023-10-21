@@ -9,6 +9,7 @@ export const getAllTags = async (params: GetAllTagsParams) => {
   try {
     connectToDatabase()
     const { page = 1, pageSize = 10, filter, searchQuery } = params
+    const skipAmount = (page - 1) * pageSize;
     let searchCmd = {}
     if (searchQuery) {
       searchCmd = { name: { $regex: new RegExp(searchQuery, "i") } }
@@ -20,12 +21,14 @@ export const getAllTags = async (params: GetAllTagsParams) => {
       case 'name': filterCmd = { name: 1 }; break;
       case 'old': filterCmd = { createdAt: 1 }; break;
     }
-    const allTags: unknown = await TagDocument.find(searchCmd, null, { skip: (page - 1) * pageSize, limit: pageSize, sort: filterCmd })
-    const parsedAllTags = TagListSchema.parse(allTags).filter(tag => tag.questions.length > 0)
+    const allTags: unknown = await TagDocument.find(searchCmd, null, { skip: skipAmount, limit: pageSize, sort: filterCmd })
+    const parsedAllTags = TagListSchema.parse(allTags)
     if (!parsedAllTags) {
       throw new Error('Tags not found')
     }
-    return parsedAllTags
+    const totalCount = await TagDocument.countDocuments(searchCmd)
+    const isNext = (skipAmount + parsedAllTags.length) < totalCount;
+    return { allTags: parsedAllTags, isNext }
   } catch (error) {
     console.log(error)
     throw error
@@ -68,13 +71,14 @@ export const getQuestionsByTagId = async (param: GetQuestionsByTagIdParams) => {
           { path: "author" },
         ],
         match: searchCmd,
-        options: { sort: { createdAt: -1 }, skip: (page - 1) * pageSize, limit: pageSize },
+        options: { sort: { createdAt: -1 }, skip: (page - 1) * pageSize, limit: pageSize + 1 },
       })
     const parsedResult = TagAllQuestionsSchema.safeParse(tagDetail);
     if (!parsedResult.success) {
       throw new Error("tag related questions not found");
     }
-    return { name: parsedResult.data.name, questions: parsedResult.data.questions };
+    const isNext = parsedResult.data.questions.length > pageSize;
+    return { name: parsedResult.data.name, questions: parsedResult.data.questions, isNext };
   } catch (error) {
     console.log(error)
     throw error;

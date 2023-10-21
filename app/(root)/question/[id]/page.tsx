@@ -13,6 +13,7 @@ import { getUsereById } from '@/lib/actions/user.action'
 import { getAnswers } from '@/lib/actions/answer.action'
 import AnswerCard from '@/components/shared/cards/AnswerCard'
 import Votes from '@/components/shared/Votes'
+import Pagination from '@/components/shared/Pagination'
 
 const Influence = ({
   asked, answers, views, votes
@@ -49,9 +50,9 @@ const Page = async ({
   }
 }) => {
   const question = await getQuestionById({ questionId: params.id })
-  const page = searchParams.page as number
+  const page = searchParams.page as number < 1 ? 1 : searchParams.page as number
 
-  const answers = await getAnswers({
+  const { answers, isNext } = await getAnswers({
     questionId: params.id,
     page,
     sortBy: decodeURI(searchParams.filter as string ?? ""),
@@ -100,6 +101,9 @@ const Page = async ({
           createdAt={getTimeStamp(answer.createdAt)}
         />
       ))}
+      <div className={answers.length === 0 ? 'hidden' : ''}>
+        <Pagination page={page} isNext={isNext} />
+      </div>
       <AnswerForm question={question.content} questionId={question._id} userId={mongooseUser._id} />
     </article>
   )

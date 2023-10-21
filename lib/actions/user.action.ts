@@ -5,7 +5,7 @@ import { connectToDatabase } from "../mongoose"
 import { CreateUserParams, DeleteUserParams, GetAllUsersParams, GetUserByIdParams, UpdateUserParams, ToggleSaveQuestionParams, GetSavedQuestionsParams, GetUserStatsParams } from "./shared"
 import { revalidatePath } from "next/cache"
 import QuestionDocument from "@/database/question.model"
-import { UserListSchema, UserSchema, UserAllQuestionsSchema, QuestionListSchema } from "../validations"
+import { UserListSchema, UserSchema, UserAllQuestionsSchema, QuestionListSchema, AnswerWithQuestionListSchema } from "../validations"
 import AnswerDocument from "@/database/answer.model"
 
 export const getUsereById = async (params: GetUserByIdParams) => {
@@ -74,7 +74,7 @@ export const getAllUsers = async (params: GetAllUsersParams) => {
   try {
     connectToDatabase()
     const { page = 1, pageSize = 10, filter, searchQuery } = params
-
+    const skipAmount = (page - 1) * pageSize;
     let searchCmd = {}
     if (searchQuery) {
       const regexValue = { $regex: new RegExp(searchQuery, "i") }
@@ -87,12 +87,14 @@ export const getAllUsers = async (params: GetAllUsersParams) => {
       case 'top_contributors': filterCmd = { reputation: -1 }; break;
     }
 
-    const allUsers: unknown = await UserDocument.find(searchCmd, null, { skip: (page - 1) * pageSize, limit: pageSize, sort: filterCmd })
-    const parsedAllUsers = UserListSchema.safeParse(allUsers)
-    if (!parsedAllUsers.success) {
+    const allUsers: unknown = await UserDocument.find(searchCmd, null, { skip: skipAmount, limit: pageSize, sort: filterCmd })
+    const parsedResult = UserListSchema.safeParse(allUsers)
+    if (!parsedResult.success) {
       throw new Error('Error parsing all users')
     }
-    return { parsedAllUsers };
+    const totalCount = await UserDocument.countDocuments(searchCmd)
+    const isNext = (skipAmount + parsedResult.data.length) < totalCount;
+    return { allUsers: parsedResult.data, isNext }
   } catch (error) {
     console.log(error)
     throw error
@@ -146,7 +148,7 @@ export const getSavedQuestions = async (params: GetSavedQuestionsParams) => {
       .populate({
         path: "saved",
         match: searchCmd,
-        options: { sort: filterCmd, skip: (page - 1) * pageSize, limit: pageSize },
+        options: { sort: filterCmd, skip: (page - 1) * pageSize, limit: pageSize + 1 },
         populate: [{
           path: "tags",
           select: "_id name"
@@ -158,11 +160,11 @@ export const getSavedQuestions = async (params: GetSavedQuestionsParams) => {
       throw new Error('User not found')
     }
     const parsedResult = UserAllQuestionsSchema.safeParse(user)
-
     if (!parsedResult.success) {
       throw new Error('Error parsing user with all questions')
     }
-    return parsedResult.data.saved;
+    const isNext = parsedResult.data.saved.length > pageSize
+    return { questions: parsedResult.data.saved, isNext };
   } catch (error) {
     console.log(error)
     throw error
@@ -190,9 +192,10 @@ export const getQuestionsByUser = async (param: GetUserStatsParams) => {
   try {
     connectToDatabase();
     const { userId, page = 1, pageSize = 10 } = param;
+    const skipAmount = (page - 1) * pageSize;
     const questions: unknown = await QuestionDocument.find({ author: userId })
       .limit(pageSize)
-      .skip((page - 1) * pageSize)
+      .skip(skipAmount)
       .sort({ views: -1, upvotes: -1 })
       .populate({ path: "tags", select: "_id name" })
       .populate("author");
@@ -201,34 +204,34 @@ export const getQuestionsByUser = async (param: GetUserStatsParams) => {
       console.log(parsedQuestions.error)
       throw parsedQuestions.error;
     }
-    return parsedQuestions.data
+    const totalCount = await QuestionDocument.countDocuments({ author: userId });
+    const isNext = (skipAmount + parsedQuestions.data.length) < totalCount
+    return { questions: parsedQuestions.data, isNext }
   } catch (error) {
     console.log(error)
     throw error;
   }
 }
-
+// TODO: if user have more than 1 answer under the same question, ui will show the same item multiple times
 export const getAnswersByUser = async (param: GetUserStatsParams) => {
   try {
     connectToDatabase();
     const { userId, page = 1, pageSize = 10 } = param;
-    const questionIds = await AnswerDocument.find({ author: userId })
+    const skipAmount = (page - 1) * pageSize;
+    const answers = await AnswerDocument.find({ author: userId })
       .limit(pageSize)
-      .skip((page - 1) * pageSize)
-      .distinct('question')
-    // const questionIds = await InteractionDocument.find({ user: userId, action: 'answered' })
-    //   .limit(pageSize)
-    //   .skip((page - 1) * pageSize)
-    //   .distinct('question')
-    const questions: unknown = await QuestionDocument.find({ _id: { $in: questionIds } })
-      .sort({ views: -1, upvotes: -1 })
-      .populate({ path: "tags", select: "_id name" })
-      .populate("author");
-    const parsedQuestions = QuestionListSchema.safeParse(questions);
-    if (!parsedQuestions.success) {
-      throw parsedQuestions.error
+      .skip(skipAmount)
+      .sort({ upvotes: -1 })
+      .populate("question", "_id title")
+      .populate("author", "_id clerkId name picture")
+
+    const parsedAnswers = AnswerWithQuestionListSchema.safeParse(answers);
+    if (!parsedAnswers.success) {
+      throw parsedAnswers.error
     }
-    return parsedQuestions.data
+    const totalCount = await AnswerDocument.countDocuments({ author: userId });
+    const isNext = (skipAmount + parsedAnswers.data.length) < totalCount;
+    return { answers: parsedAnswers.data, isNext }
   } catch (error) {
     console.log(error)
     throw error;

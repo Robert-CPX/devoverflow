@@ -71,6 +71,7 @@ export const getQuestions = async (param: GetQuestionsParams) => {
   try {
     connectToDatabase()
     const { page = 1, pageSize = 10, searchQuery, filter } = param;
+    const skipAmount = (page - 1) * pageSize;
     let searchCmd = {}
     if (searchQuery) {
       const regexValue = { $regex: new RegExp(searchQuery, "i") }
@@ -83,14 +84,16 @@ export const getQuestions = async (param: GetQuestionsParams) => {
       case 'frequent': filterCmd = { views: -1 }; break;
       case 'unanswered': filterCmd = { answers: 1 }; break;
     }
-    const questions: unknown = await QuestionDocument.find(searchCmd, null, { skip: (page - 1) * pageSize, limit: pageSize, sort: filterCmd })
+    const questions: unknown = await QuestionDocument.find(searchCmd, null, { skip: skipAmount, limit: pageSize, sort: filterCmd })
       .populate({ path: "tags", select: "_id name" })
       .populate("author");
     const parsedQuestions = QuestionListSchema.safeParse(questions);
     if (!parsedQuestions.success) {
       throw parsedQuestions.error;
     }
-    return parsedQuestions.data;
+    const totalCount = await QuestionDocument.countDocuments(searchCmd);
+    const isNext = (skipAmount + parsedQuestions.data.length) < totalCount;
+    return { questions: parsedQuestions.data, isNext };
   } catch (error) {
     console.log(error)
     throw error;

@@ -40,13 +40,14 @@ export const getAnswers = async (param: GetAnswersParams) => {
     connectToDatabase()
     const { questionId, sortBy, page = 1, pageSize = 10 } = param;
     let filterCmd = {}
+    const skipAmount = (page - 1) * pageSize;
     switch (sortBy) {
       case 'highestUpvotes': filterCmd = { upvotes: -1 }; break;
       case 'lowestUpvotes': filterCmd = { upvotes: 1 }; break;
       case 'recent': filterCmd = { createdAt: -1 }; break;
       case 'old': filterCmd = { createdAt: 1 }; break;
     }
-    const answers: unknown = await AnswerDocument.find({ question: questionId }, null, { skip: (page - 1) * pageSize, limit: pageSize, sort: filterCmd })
+    const answers: unknown = await AnswerDocument.find({ question: questionId }, null, { skip: skipAmount, limit: pageSize, sort: filterCmd })
       .populate({
         path: "author",
         select: "name picture _id clerkId",
@@ -55,9 +56,12 @@ export const getAnswers = async (param: GetAnswersParams) => {
     if (!parsedAnswers.success) {
       throw parsedAnswers.error;
     }
-    return parsedAnswers.data;
+    const totalCount = await AnswerDocument.countDocuments({ question: questionId })
+    const isNext = (skipAmount + parsedAnswers.data.length) < totalCount;
+    return { answers: parsedAnswers.data, isNext };
   } catch (error) {
     console.log(error)
+    throw error
   }
 }
 

@@ -5,6 +5,7 @@ import UserCard from '@/components/shared/UserCard'
 import { UserFilters } from '@/constants/filter'
 import { getAllUsers } from '@/lib/actions/user.action'
 import NoCommunity from '@/components/shared/NoCommunity'
+import Pagination from '@/components/shared/Pagination'
 
 const SearchSection = () => {
   return (
@@ -22,18 +23,19 @@ const Page = async ({
     [key: string]: string | number
   }
 }) => {
-  const result = await getAllUsers({
+  const page = searchParams.page as number < 1 ? 1 : searchParams.page as number
+  const { allUsers, isNext } = await getAllUsers({
     searchQuery: decodeURI(searchParams.q as string ?? ""),
     filter: decodeURI(searchParams.filter as string ?? ""),
-    page: searchParams.page as number
+    page
   })
   return (
     <section className='flex flex-col gap-8'>
       <h1 className='h1-bold text-dark100_light900'>All Users</h1>
       <SearchSection />
-      {result.parsedAllUsers.data.length > 0 ? (
+      {allUsers.length > 0 ? (
         <div className='flex w-full flex-wrap justify-start gap-5'>
-          {result.parsedAllUsers.data.map((user) => (
+          {allUsers.map((user) => (
             <UserCard key={user._id}
               _id={user._id}
               picture={user.picture}
@@ -45,6 +47,9 @@ const Page = async ({
       ) : (
         <NoCommunity />
       )}
+      <div className={allUsers.length === 0 ? 'hidden' : ''}>
+        <Pagination page={page} isNext={isNext} />
+      </div>
     </section >
   )
 }

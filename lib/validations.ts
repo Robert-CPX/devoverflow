@@ -22,6 +22,18 @@ export const AnswerSchema = z.object({
 
 export const AnswerListSchema = z.array(AnswerSchema)
 
+export const AnswerWithQuestionSchema = z.object({
+  _id: z.coerce.string(),
+  content: z.string().nonempty(),
+  upvotes: z.coerce.string().array(),
+  downvotes: z.coerce.string().array(),
+  author: z.custom<{ _id: string, clerkId: string, name: string, picture: string }>(),
+  question: z.custom<{ _id: string, title: string, views: number }>(),
+  createdAt: z.date(),
+})
+
+export const AnswerWithQuestionListSchema = z.array(AnswerWithQuestionSchema)
+
 export const UserSchema = z.object({
   _id: z.coerce.string(),
   clerkId: z.string(),
