@@ -134,3 +134,11 @@ export const TopQuestionSchema = z.object({
 })
 
 export const TopQuestionListSchema = z.array(TopQuestionSchema)
+
+export const GlobalSearchSchema = z.object({
+  _id: z.coerce.string(),
+  title: z.string(),
+  type: z.string(),
+})
+
+export const GlobalSearchListSchema = z.array(GlobalSearchSchema)

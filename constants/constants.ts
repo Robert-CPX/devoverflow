@@ -29,6 +29,13 @@ export const userFilterTypes = [
   { _id: 3, title: "Top Contributors" },
 ]
 
+export const globalSearchTypes = [
+  { _id: 1, title: "Question" },
+  { _id: 2, title: "Answer" },
+  { _id: 3, title: "User" },
+  { _id: 3, title: "Tag" },
+]
+
 export const mockTopQuestions = [
   { _id: "1", title: "Would it be appropriate to point out an error in another paper during a referee report paper during a referee report paper during a referee report paper during a referee report paper during a referee report paper during a referee report paper during a referee report ?", url: "https://bing.com" },
   { _id: "2", title: "How can an airconditioning machine exis?", url: "https://bing.com" },

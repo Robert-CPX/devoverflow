@@ -4,22 +4,56 @@ import React, { useEffect, useState } from 'react'
 import Image from 'next/image'
 import { Input } from '@/components/ui/input'
 import { useRouter, useSearchParams } from 'next/navigation'
+import GlobalSearchResult from './GlobalSearchResult'
 
 const GlobalSearchBar = () => {
+  const searchParams = useSearchParams()
+  const q = searchParams.get('global')
+  const router = useRouter()
+  const [debouncedQuery, setDebouncedQuery] = useState(q || "")
+  const [query, setQuery] = useState(debouncedQuery || "")
+  const [isOpen, setIsOpen] = useState(false)
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setQuery(debouncedQuery)
+    }, 1000)
+    return () => clearTimeout(timer)
+  }, [debouncedQuery])
+
+  useEffect(() => {
+    const params = new URLSearchParams(searchParams.toString())
+    if (query === "") {
+      params.delete('global')
+    } else {
+      params.set('global', encodeURI(query))
+    }
+    router.push(`?${params}`)
+  }, [query, router, searchParams])
+
   return (
-    <div className='background-light800_darkgradient relative flex min-h-[56px] w-full max-w-[600px] items-center justify-start gap-1 rounded-lg px-4 max-lg:hidden'>
-      <Image
-        src="/assets/icons/search.svg"
-        width={23}
-        height={23}
-        alt='search'
-      />
-      <Input
-        type='text'
-        onChange={() => { }}
-        className='text-dark400_light900 no-focus placeholder paragraph-regular border-none bg-transparent outline-none'
-        placeholder='Search anything globally...'
-      />
+    <div className='background-light800_darkgradient relative flex min-h-[56px] w-full max-w-[600px] flex-col justify-center rounded-lg max-lg:hidden'>
+      <div className='flex items-center justify-start gap-1 px-4'>
+        <Image
+          src="/assets/icons/search.svg"
+          width={23}
+          height={23}
+          alt='search'
+        />
+        <Input
+          type='text'
+          value={debouncedQuery}
+          onChange={(e) => {
+            setDebouncedQuery(e.target.value)
+
+            if (!isOpen) setIsOpen(true)
+            if (e.target.value === "" && isOpen) setIsOpen(false)
+          }}
+          className='text-dark400_light900 no-focus placeholder paragraph-regular border-none bg-transparent outline-none'
+          placeholder='Search anything globally...'
+        />
+      </div>
+      <GlobalSearchResult query={query} show={isOpen} handleClickOutside={() => setIsOpen(false)} />
     </div>
   )
 }

@@ -2,11 +2,12 @@
 
 import UserDocument from "@/database/user.model"
 import { connectToDatabase } from "../mongoose"
-import { CreateUserParams, DeleteUserParams, GetAllUsersParams, GetUserByIdParams, UpdateUserParams, ToggleSaveQuestionParams, GetSavedQuestionsParams, GetUserStatsParams } from "./shared"
+import { CreateUserParams, DeleteUserParams, GetAllUsersParams, GetUserByIdParams, UpdateUserParams, ToggleSaveQuestionParams, GetSavedQuestionsParams, GetUserStatsParams, SearchParams } from "./shared"
 import { revalidatePath } from "next/cache"
 import QuestionDocument from "@/database/question.model"
 import { UserListSchema, UserSchema, UserAllQuestionsSchema, QuestionListSchema, AnswerWithQuestionListSchema } from "../validations"
 import AnswerDocument from "@/database/answer.model"
+import TagDocument from "@/database/tag.model"
 
 export const getUsereById = async (params: GetUserByIdParams) => {
   try {
@@ -232,6 +233,44 @@ export const getAnswersByUser = async (param: GetUserStatsParams) => {
     const totalCount = await AnswerDocument.countDocuments({ author: userId });
     const isNext = (skipAmount + parsedAnswers.data.length) < totalCount;
     return { answers: parsedAnswers.data, isNext }
+  } catch (error) {
+    console.log(error)
+    throw error;
+  }
+}
+// search answer, question, user, tag with the same query
+export const getGlobalSearchResult = async (params: SearchParams) => {
+  try {
+    connectToDatabase()
+
+    const { query, type } = params
+    if (!query) return null
+    const questions = QuestionDocument.aggregate([
+      {
+        $search: {
+          index: 'default',
+          text: {
+            query,
+            path: {
+              wildcard: '*'
+            }
+          }
+        }
+      },
+      {
+        $project: {
+          title: 1,
+          views: 1,
+          answers: 1,
+          createdAt: 1,
+          tags: 1,
+        }
+      },
+    ])
+    const answers = AnswerDocument.find({ content: { $regex: new RegExp(query, "i") } })
+    const tags = TagDocument.find({ name: { $regex: new RegExp(query, "i") } })
+    const users = UserDocument.find({ $or: [{ name: { $regex: new RegExp(query, "i") } }, { username: { $regex: new RegExp(query, "i") } }] })
+
   } catch (error) {
     console.log(error)
     throw error;
