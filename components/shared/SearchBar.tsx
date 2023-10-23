@@ -58,7 +58,7 @@ const GlobalSearchBar = () => {
   )
 }
 
-type LocalSearchType = "Question" | "User" | "Tag"
+type LocalSearchType = "Question" | "User" | "Tag" | "Job"
 
 const LocalSearchBar = ({ type }: { type: LocalSearchType }) => {
   const searchParams = useSearchParams()
@@ -97,7 +97,7 @@ const LocalSearchBar = ({ type }: { type: LocalSearchType }) => {
         value={debouncedQuery}
         onChange={(e) => setDebouncedQuery(e.target.value)}
         className='text-dark400_light900 no-focus placeholder paragraph-regular border-none bg-transparent outline-none'
-        placeholder={`${type === "Question" ? "Search questions..." : type === "User" ? "Search amazing minds here..." : "Search tag questions..."}`}
+        placeholder={`${type === "Question" ? "Search questions..." : type === "User" ? "Search amazing minds here..." : type === "Tag" ? "Search tag questions..." : "Job Title, Company, or Keywords"}`}
       />
     </div>
   )
