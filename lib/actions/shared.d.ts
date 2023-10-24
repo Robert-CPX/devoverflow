@@ -163,3 +163,10 @@ export type GetUserStatsParams = {
 export type DeleteUserParams = {
   clerkId: string;
 }
+
+export type UpdateReputationParams = {
+  userId: string;
+  action: "create_question" | "delete_question" | "create_answer" | "delete_answer" | "upvote_question" | "upvote_answer" | "downvote_question" | "downvote_answer" | "receive_upvote" | "receive_downvote";
+  questionId?: string;
+  answerId?: string;
+}

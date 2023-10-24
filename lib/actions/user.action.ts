@@ -2,12 +2,13 @@
 
 import UserDocument from "@/database/user.model"
 import { connectToDatabase } from "../mongoose"
-import { CreateUserParams, DeleteUserParams, GetAllUsersParams, GetUserByIdParams, UpdateUserParams, ToggleSaveQuestionParams, GetSavedQuestionsParams, GetUserStatsParams, SearchParams } from "./shared"
+import { CreateUserParams, DeleteUserParams, GetAllUsersParams, GetUserByIdParams, UpdateUserParams, ToggleSaveQuestionParams, GetSavedQuestionsParams, GetUserStatsParams, SearchParams, UpdateReputationParams } from "./shared"
 import { revalidatePath } from "next/cache"
 import QuestionDocument from "@/database/question.model"
 import { UserListSchema, UserSchema, UserAllQuestionsSchema, QuestionListSchema, AnswerWithQuestionListSchema, GlobalSearchListSchema } from "../validations"
 import AnswerDocument from "@/database/answer.model"
 import TagDocument from "@/database/tag.model"
+import InteractionDocument from "@/database/interaction.model"
 
 export const getUsereById = async (params: GetUserByIdParams) => {
   try {
@@ -197,7 +198,7 @@ export const getQuestionsByUser = async (param: GetUserStatsParams) => {
     const questions: unknown = await QuestionDocument.find({ author: userId })
       .limit(pageSize)
       .skip(skipAmount)
-      .sort({ views: -1, upvotes: -1 })
+      .sort({ createdAt: -1, views: -1, upvotes: -1 })
       .populate({ path: "tags", select: "_id name" })
       .populate("author");
     const parsedQuestions = QuestionListSchema.safeParse(questions);
@@ -222,7 +223,7 @@ export const getAnswersByUser = async (param: GetUserStatsParams) => {
     const answers = await AnswerDocument.find({ author: userId })
       .limit(pageSize)
       .skip(skipAmount)
-      .sort({ upvotes: -1 })
+      .sort({ createdAt: -1, upvotes: -1 })
       .populate("question", "_id title")
       .populate("author", "_id clerkId name picture")
 
@@ -330,5 +331,39 @@ export const getGlobalSearchResult = async (params: SearchParams) => {
   } catch (error) {
     console.log(error)
     throw error;
+  }
+}
+
+export const updateReputation = async (params: UpdateReputationParams) => {
+  try {
+    connectToDatabase();
+    const { userId, action, questionId, answerId } = params
+    let change = {}
+    switch (action) {
+      case "create_question": change = { reputation: +5 }; break
+      case "delete_question": change = { reputation: -5 }; break
+      case "create_answer": change = { reputation: +5 }; break
+      case "delete_answer": change = { reputation: -5 }; break
+      case "upvote_question": change = { reputation: +1 }; break
+      case "upvote_answer": change = { reputation: +1 }; break
+      case "downvote_question": change = { reputation: -1 }; break
+      case "downvote_answer": change = { reputation: -1 }; break
+      case "receive_upvote": change = { reputation: +10 }; break
+      case "receive_downvote": change = { reputation: -5 }; break
+      default: change = { reputation: +0 }; break
+    }
+    await InteractionDocument.create({
+      user: userId,
+      questionId,
+      answerId,
+      action
+    })
+
+    await UserDocument.findByIdAndUpdate(userId, {
+      $inc: change
+    });
+
+  } catch (error) {
+    console.log(error)
   }
 }

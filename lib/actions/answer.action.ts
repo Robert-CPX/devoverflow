@@ -7,6 +7,7 @@ import AnswerDocument from "@/database/answer.model";
 import QuestionDocument from "@/database/question.model";
 import { AnswerListSchema } from "../validations";
 import InteractionDocument from "@/database/interaction.model";
+import { updateReputation } from "./user.action";
 
 export const createAnswer = async (param: CreateAnswerParams) => {
   try {
@@ -21,13 +22,7 @@ export const createAnswer = async (param: CreateAnswerParams) => {
       $push: { answers: newAnswer._id },
     });
 
-    await InteractionDocument.create({
-      user: author,
-      question,
-      answer: newAnswer._id,
-      action: 'answered'
-    })
-
+    await updateReputation({ userId: author, action: 'create_answer', answerId: newAnswer._id, questionId: question })
     revalidatePath(path)
   } catch (error) {
     console.log(error)
@@ -87,6 +82,11 @@ export const upvoteAnswer = async (param: AnswerVoteParams) => {
     if (!answer) {
       throw new Error("Answer not found")
     }
+    if (!hasupVoted || hasdownVoted) {
+      await updateReputation({ userId, action: 'upvote_answer', answerId: answer._id })
+      await updateReputation({ userId: answer.author, action: 'receive_upvote', answerId: answer._id })
+    }
+
     revalidatePath(path)
   } catch (error) {
     console.log(error)
@@ -115,6 +115,10 @@ export const downvoteAnswer = async (param: AnswerVoteParams) => {
     if (!answer) {
       throw new Error("Answer not found")
     }
+    if (!hasdownVoted || hasupVoted) {
+      await updateReputation({ userId, action: 'downvote_answer', answerId: answer._id })
+      await updateReputation({ userId: answer.author, action: 'receive_downvote', answerId: answer._id })
+    }
     revalidatePath(path)
   } catch (error) {
     console.log(error)
@@ -133,6 +137,7 @@ export const deleteAnswer = async (params: DeleteAnswerParams) => {
       $pull: { answers: answerId }
     })
     await InteractionDocument.deleteMany({ answer: answerId })
+    await updateReputation({ userId: answer.author, action: "delete_answer", answerId });
     revalidatePath(path)
   } catch (error) {
     console.log(error)

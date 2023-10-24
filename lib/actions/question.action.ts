@@ -10,6 +10,7 @@ import UserDocument from "@/database/user.model"
 import AnswerDocument from "@/database/answer.model";
 import InteractionDocument from "@/database/interaction.model";
 import mongoose from "mongoose";
+import { updateReputation } from "./user.action";
 
 export const createQuestion = async (param: CreateQuestionParams) => {
   try {
@@ -34,6 +35,7 @@ export const createQuestion = async (param: CreateQuestionParams) => {
     await QuestionDocument.findByIdAndUpdate(question._id, {
       $push: { tags: tagDocuments }
     });
+    await updateReputation({ userId: author, action: "create_question", questionId: question._id });
     revalidatePath(path);
   } catch (error) {
     console.log(error)
@@ -149,6 +151,10 @@ export const upvoteQuestion = async (param: QuestionVoteParams) => {
     if (!question) {
       throw new Error("Question not found")
     }
+    if (!hasupVoted || hasdownVoted) {
+      await updateReputation({ userId, action: "upvote_question", questionId: question._id });
+      await updateReputation({ userId: question.author, action: "receive_upvote", questionId: question._id });
+    }
     revalidatePath(path)
   } catch (error) {
     console.log(error)
@@ -183,6 +189,10 @@ export const downvoteQuestion = async (param: QuestionVoteParams) => {
     if (!question) {
       throw new Error("Question not found")
     }
+    if (!hasdownVoted || hasupVoted) {
+      await updateReputation({ userId, action: "downvote_question", questionId: question._id });
+      await updateReputation({ userId: question.author, action: "receive_downvote", questionId: question._id });
+    }
     revalidatePath(path)
   } catch (error) {
     console.log(error)
@@ -194,10 +204,12 @@ export const deleteQuestion = async (param: DeleteQuestionParams) => {
   try {
     connectToDatabase()
     const { questionId, path } = param
-    await QuestionDocument.deleteOne({ _id: questionId })
+    const question = await QuestionDocument.findOneAndDelete({ _id: questionId })
+    // await QuestionDocument.deleteOne({ _id: questionId })
     await AnswerDocument.deleteMany({ question: questionId })
     await InteractionDocument.deleteMany({ question: questionId })
     await TagDocument.updateMany({ questions: questionId }, { $pull: { questions: questionId } })
+    await updateReputation({ userId: question.author, action: "delete_question", questionId });
     revalidatePath(path)
   } catch (error) {
     console.log(error)
