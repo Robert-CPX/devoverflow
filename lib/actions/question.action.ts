@@ -6,8 +6,10 @@ import QuestionDocument from "@/database/question.model"
 import { CreateQuestionParams, DeleteQuestionParams, EditQuestionParams, GetQuestionByIdParams, GetQuestionsParams, QuestionVoteParams } from "./shared";
 import { revalidatePath } from "next/cache";
 import { QuestionSchema, QuestionListSchema, TopQuestionListSchema } from "../validations";
+import UserDocument from "@/database/user.model"
 import AnswerDocument from "@/database/answer.model";
 import InteractionDocument from "@/database/interaction.model";
+import mongoose from "mongoose";
 
 export const createQuestion = async (param: CreateQuestionParams) => {
   try {
@@ -84,9 +86,11 @@ export const getQuestions = async (param: GetQuestionsParams) => {
       case 'frequent': filterCmd = { views: -1 }; break;
       case 'unanswered': filterCmd = { answers: 1 }; break;
     }
+    // prohibit mongodb Schema hasn't been registered error
+    mongoose.model('User', UserDocument.schema)
     const questions: unknown = await QuestionDocument.find(searchCmd, null, { skip: skipAmount, limit: pageSize, sort: filterCmd })
       .populate({ path: "tags", select: "_id name" })
-      .populate("author");
+      .populate({ path: "author" })
     const parsedQuestions = QuestionListSchema.safeParse(questions);
     if (!parsedQuestions.success) {
       throw parsedQuestions.error;
