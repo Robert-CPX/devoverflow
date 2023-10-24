@@ -8,11 +8,11 @@ import GlobalSearchResult from './GlobalSearchResult'
 
 const GlobalSearchBar = () => {
   const searchParams = useSearchParams()
-  const q = searchParams.get('global')
+  const global = searchParams.get('global')
   const router = useRouter()
-  const [debouncedQuery, setDebouncedQuery] = useState(q || "")
+  const [debouncedQuery, setDebouncedQuery] = useState(global || "")
   const [query, setQuery] = useState(debouncedQuery || "")
-  const [isOpen, setIsOpen] = useState(false)
+  const [isOpen, setIsOpen] = useState((global?.length || 0) > 0)
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -53,7 +53,7 @@ const GlobalSearchBar = () => {
           placeholder='Search anything globally...'
         />
       </div>
-      <GlobalSearchResult query={query} show={isOpen} handleClickOutside={() => setIsOpen(false)} />
+      <GlobalSearchResult show={isOpen} handleClickOutside={() => setIsOpen(false)} />
     </div>
   )
 }
