@@ -30,10 +30,10 @@ export const userFilterTypes = [
 ]
 
 export const globalSearchTypes = [
-  { _id: 1, title: "Question" },
-  { _id: 2, title: "Answer" },
-  { _id: 3, title: "User" },
-  { _id: 3, title: "Tag" },
+  { _id: 1, title: "question" },
+  { _id: 2, title: "answer" },
+  { _id: 3, title: "user" },
+  { _id: 3, title: "tag" },
 ]
 
 export const mockTopQuestions = [

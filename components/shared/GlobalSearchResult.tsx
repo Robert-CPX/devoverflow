@@ -17,10 +17,11 @@ type GlobalSearchResultProps = {
 const GlobalSearchResult = ({ show, handleClickOutside }: GlobalSearchResultProps) => {
   const searchParams = useSearchParams()
   const global = searchParams.get('global')
-  const type = searchParams.get('type')
-  const ref = useRef<HTMLDivElement>(null);
+  const type = searchParams.get('type')?.toLocaleLowerCase()
+  const ref = useRef<HTMLDivElement>(null)
+
+  const [result, setResult] = useState<{ _id: string, title: string, type: string }[]>([])
   const [isLoading, setIsLoading] = useState(false)
-  const result = [{ _id: "1", title: "title", type: "Answer" }, { _id: "2", title: "lalalla", type: "Questions" }, { _id: "3", title: "leiaddafc", type: "Tag" }]
 
   useEffect(() => {
     const onClickOutside = (e: MouseEvent) => {
@@ -35,7 +36,15 @@ const GlobalSearchResult = ({ show, handleClickOutside }: GlobalSearchResultProp
   }, [handleClickOutside])
 
   useEffect(() => {
-    // const result = getGlobalSearchResult({ global, type })
+    const fetchResult = async () => {
+      const data = await getGlobalSearchResult({ query: global, type })
+      setIsLoading(false)
+      setResult(data ?? [])
+    }
+    setIsLoading(true)
+    if (global) {
+      fetchResult()
+    }
   }, [global, type])
 
   if (!show) return null
@@ -47,14 +56,14 @@ const GlobalSearchResult = ({ show, handleClickOutside }: GlobalSearchResultProp
   }) => {
     let link = ''
     switch (type) {
-      case 'Answer':
-        link = `/answer/${id}`
-        break
-      case 'Question':
+      case 'answer' || 'question':
         link = `/question/${id}`
         break
-      case 'Tag':
-        link = `/tag/${id}`
+      case 'tag':
+        link = `/tags/${id}`
+        break
+      case 'user':
+        link = `/profile/${id}`
         break
       default:
         link = ''
@@ -90,7 +99,7 @@ const GlobalSearchResult = ({ show, handleClickOutside }: GlobalSearchResultProp
           <p className='paragraph-semibold text-dark400_light900 px-5 pb-3'>Top Match</p>
           {result.length > 0 ? (
             result.map((item) => (
-              <Item key={item._id} id={item._id} title={item.title} type={item.type.toUpperCase()} />
+              <Item key={item._id} id={item._id} title={item.title} type={item.type} />
             ))
           ) : (
             <div className='flex-center flex-col'>

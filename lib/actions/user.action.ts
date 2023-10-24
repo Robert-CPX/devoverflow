@@ -5,7 +5,7 @@ import { connectToDatabase } from "../mongoose"
 import { CreateUserParams, DeleteUserParams, GetAllUsersParams, GetUserByIdParams, UpdateUserParams, ToggleSaveQuestionParams, GetSavedQuestionsParams, GetUserStatsParams, SearchParams } from "./shared"
 import { revalidatePath } from "next/cache"
 import QuestionDocument from "@/database/question.model"
-import { UserListSchema, UserSchema, UserAllQuestionsSchema, QuestionListSchema, AnswerWithQuestionListSchema } from "../validations"
+import { UserListSchema, UserSchema, UserAllQuestionsSchema, QuestionListSchema, AnswerWithQuestionListSchema, GlobalSearchListSchema } from "../validations"
 import AnswerDocument from "@/database/answer.model"
 import TagDocument from "@/database/tag.model"
 
@@ -238,39 +238,95 @@ export const getAnswersByUser = async (param: GetUserStatsParams) => {
     throw error;
   }
 }
-// search answer, question, user, tag with the same query
+
+// free Atlas account can only create 3 indexes, sad...
 export const getGlobalSearchResult = async (params: SearchParams) => {
   try {
     connectToDatabase()
-
+    let result = []
     const { query, type } = params
     if (!query) return null
-    const questions = QuestionDocument.aggregate([
-      {
-        $search: {
-          index: 'default',
-          text: {
-            query,
-            path: {
-              wildcard: '*'
+    if (!type) {
+      const questions = await QuestionDocument.aggregate([
+        { $search: { index: "default", text: { query, path: "title" } } },
+        { $limit: 2 },
+        { $project: { _id: 1, title: 1, type: "question" } }
+      ])
+
+      const answers = await AnswerDocument.aggregate([
+        { $search: { index: "default", text: { query, path: "content" } } },
+        { $limit: 2 },
+        { $project: { _id: '$question', title: `Answers containing ${query}`, type: "answer" } }
+      ])
+
+      const tags = await TagDocument.aggregate([
+        { $search: { index: "default", text: { query, path: "name" } } },
+        { $limit: 2 },
+        { $project: { _id: 1, title: "$name", type: "tag" } }
+      ])
+
+      const regexValue = { $regex: new RegExp(query, "i") }
+      const users = await UserDocument.find({ $or: [{ name: regexValue }, { username: regexValue }] }, null, { limit: 2 })
+      const parsedUsers = UserListSchema.safeParse(users)
+      let formattedUsers: { _id: string, title: string, type: string }[] = []
+      if (parsedUsers.success) {
+        formattedUsers = parsedUsers.data.map(user => {
+          return {
+            _id: user.clerkId,
+            title: user.name,
+            type: "user"
+          }
+        })
+      }
+      result.push(...questions, ...answers, ...tags, ...formattedUsers)
+    } else {
+      switch (type) {
+        case 'question':
+          result = await QuestionDocument.aggregate([
+            { $search: { index: "default", text: { query, path: "title" } } },
+            { $limit: 8 },
+            { $project: { _id: 1, title: 1, type: "question" } }
+          ])
+          break;
+        case 'answer':
+          result = await AnswerDocument.aggregate([
+            { $search: { index: "default", text: { query, path: "content" } } },
+            { $limit: 8 },
+            { $project: { _id: '$question', title: `Answers containing ${query}`, type: "answer" } }
+          ])
+          break;
+        case 'tag':
+          result = await TagDocument.aggregate([
+            { $search: { index: "default", text: { query, path: "name" } } },
+            { $limit: 8 },
+            { $project: { _id: 1, title: "$name", type: "tag" } }
+          ])
+          break;
+        case 'user':
+          {
+            const users = await UserDocument.find({ $or: [{ name: { $regex: new RegExp(query, "i") } }, { username: { $regex: new RegExp(query, "i") } }] }).limit(8)
+            const parsedUsers = UserListSchema.safeParse(users)
+            if (parsedUsers.success) {
+              result = parsedUsers.data.map(user => {
+                return {
+                  _id: user.clerkId,
+                  title: user.name || user.username,
+                  type: "user"
+                }
+              })
             }
           }
-        }
-      },
-      {
-        $project: {
-          title: 1,
-          views: 1,
-          answers: 1,
-          createdAt: 1,
-          tags: 1,
-        }
-      },
-    ])
-    const answers = AnswerDocument.find({ content: { $regex: new RegExp(query, "i") } })
-    const tags = TagDocument.find({ name: { $regex: new RegExp(query, "i") } })
-    const users = UserDocument.find({ $or: [{ name: { $regex: new RegExp(query, "i") } }, { username: { $regex: new RegExp(query, "i") } }] })
-
+          break;
+        default:
+          result = []
+          break;
+      }
+    }
+    const parsedResult = GlobalSearchListSchema.safeParse(result)
+    if (!parsedResult.success) {
+      throw parsedResult.error
+    }
+    return parsedResult.data
   } catch (error) {
     console.log(error)
     throw error;
