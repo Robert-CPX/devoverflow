@@ -1,3 +1,4 @@
+import { Badges } from "@/constants";
 import { type ClassValue, clsx } from "clsx"
 import { twMerge } from "tailwind-merge"
 
@@ -37,4 +38,21 @@ export const formatDateToMonthYear = (date: Date): string => {
   const year = date.getFullYear();
 
   return `${month} ${year}`;
+}
+
+export const calculateBadges = ({
+  reputation, questionNum, answerNum, upvotes, mostViewedQuestion
+}: {
+  reputation: number, questionNum: number, answerNum: number, upvotes: number, mostViewedQuestion: number
+}): Badges => {
+  console.log(reputation, questionNum, answerNum, upvotes, mostViewedQuestion)
+  const gold = reputation > 1000 ? Math.floor(Math.min(questionNum / 20, answerNum / 40, upvotes / 10000, mostViewedQuestion / 10000)) : 0
+  const silver = reputation > 500 ? Math.floor(Math.min(questionNum / 10, answerNum / 20, upvotes / 500, mostViewedQuestion / 1000)) : 0
+  const bronze = reputation > 100 ? Math.floor(Math.min(questionNum / 5, answerNum / 10, upvotes / 50, mostViewedQuestion / 100)) : 0
+
+  return {
+    bronze,
+    silver,
+    gold,
+  }
 }

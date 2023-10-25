@@ -170,3 +170,7 @@ export type UpdateReputationParams = {
   questionId?: string;
   answerId?: string;
 }
+
+export type GetBadgesParams = {
+  userId: string;
+}

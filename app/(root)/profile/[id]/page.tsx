@@ -9,6 +9,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import QuestionCard from '@/components/shared/cards/QuestionCard'
 import NoResult from '@/components/shared/NoResult'
 import Pagination from '@/components/shared/Pagination'
+import { getBadges } from '@/lib/actions/badge.action'
 
 const Page = async ({
   params, searchParams
@@ -23,6 +24,7 @@ const Page = async ({
   const { user, totalAnswers, totalQuestions } = await getUserInfo({ userId: params.id })
   const { questions: userQuestions, isNext: questionIsNext } = await getQuestionsByUser({ userId: user._id, page })
   const { answers: userAnswerdQuestions, isNext: answerIsNext } = await getAnswersByUser({ userId: user._id, page })
+  const { bronze, silver, gold } = await getBadges({ userId: user._id })
   return (
     <section className='flex flex-col items-start gap-5'>
       <div className='relative flex w-full'>
@@ -48,9 +50,9 @@ const Page = async ({
       <h3 className='h3-semibold text-dark200_light900'>Stats</h3>
       <div className='grid w-full grid-cols-4 justify-start justify-items-stretch gap-5 max-md:grid-cols-2'>
         <QAStatsCard questions={totalQuestions} answers={totalAnswers} />
-        <BadgeStatsCard type="gold" count={1} />
-        <BadgeStatsCard type="silver" count={3} />
-        <BadgeStatsCard type="bronze" count={5} />
+        <BadgeStatsCard type="gold" count={gold} />
+        <BadgeStatsCard type="silver" count={silver} />
+        <BadgeStatsCard type="bronze" count={bronze} />
       </div>
       <div className='mt-3 flex w-full gap-10'>
         <Tabs defaultValue="top_posts" className="flex-1">

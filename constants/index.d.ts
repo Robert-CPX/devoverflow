@@ -27,3 +27,9 @@ export type Question = {
   answerNum: number;
   viewNum: number;
 }
+
+export type Badges = {
+  bronze: number
+  silver: number
+  gold: number
+}
