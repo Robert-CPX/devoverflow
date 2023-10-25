@@ -17,7 +17,7 @@ export const viewQuestion = async (params: ViewQuestionParams) => {
         question: questionId,
         action: 'view'
       })
-      if (existingInteraction) return console.log("User already viewed this question")
+      if (existingInteraction) return
       await InteractionDocument.create({
         user: userId,
         question: questionId,

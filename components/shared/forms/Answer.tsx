@@ -18,6 +18,7 @@ import { usePathname } from 'next/navigation';
 import { createAnswer } from '@/lib/actions/answer.action';
 import Image from 'next/image'
 import { useTheme } from '@/context/ThemeProvider';
+import { ReloadIcon } from '@radix-ui/react-icons';
 
 type AnswerFormProps = {
   question: string,
@@ -28,6 +29,7 @@ type AnswerFormProps = {
 const AnswerForm = ({ question, questionId, userId }: AnswerFormProps) => {
   const { theme } = useTheme()
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [isSubmittingAIAnswer, setIsSubmittingAIAnswer] = useState(false)
   const editorRef = useRef(null);
   const pathname = usePathname()
 
@@ -61,13 +63,43 @@ const AnswerForm = ({ question, questionId, userId }: AnswerFormProps) => {
     }
   }
 
+  const generateAIAnswer = async () => {
+    setIsSubmittingAIAnswer(true)
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/chatgpt`, {
+        method: 'POST',
+        body: JSON.stringify({ question }),
+      })
+      const data = await response.json()
+      const formattedData = data.answer.replace(/\n/g, '<br />')
+      if (editorRef.current) {
+        const editor = editorRef.current as any
+        editor.setContent(formattedData)
+      }
+    } catch (error) {
+      alert('Something went wrong')
+      throw error
+    } finally {
+      setIsSubmittingAIAnswer(false)
+    }
+  }
+
   return (
     <div className='flex w-full flex-col gap-[18px]'>
       <div className='flex items-center justify-between'>
         <p className='paragraph-semibold text-dark400_light800'>Write your answer here</p>
-        <Button className='flex-center background-light800_dark300 mb-[18px] gap-1 rounded-md border border-light-700 px-4 py-[10px] dark:border-dark-400'>
-          <Image className='object-contain' src="/assets/icons/stars.svg" alt="stars" width={12} height={12} />
-          <p className='small-medium text-primary-500'>Generate AI answer</p>
+        <Button className='flex-center background-light800_dark300 mb-[18px] gap-1 rounded-md border border-light-700 px-4 py-[10px] dark:border-dark-400' disabled={isSubmittingAIAnswer} onClick={generateAIAnswer}>
+          {isSubmittingAIAnswer ? (
+            <>
+              <ReloadIcon className='my-2 h-3 w-3 animate-spin text-primary-500' />
+              <p className='small-medium text-primary-500'>Generateing...</p>
+            </>
+          ) : (
+            <>
+              <Image className='object-contain' src="/assets/icons/stars.svg" alt="stars" width={12} height={12} />
+              <p className='small-medium text-primary-500'>Generate AI answer</p>
+            </>
+          )}
         </Button>
       </div>
       <Form {...form}>
@@ -123,7 +155,7 @@ const AnswerForm = ({ question, questionId, userId }: AnswerFormProps) => {
           </Button>
         </form>
       </Form>
-    </div>
+    </div >
   )
 }
 
