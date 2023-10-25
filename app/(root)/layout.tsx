@@ -3,6 +3,7 @@ import LeftSidebar from '@/components/shared/LeftSidebar'
 import RightSidebar from '@/components/shared/RightSidebar'
 import Navbar from '@/components/shared/navbar/Navbar'
 import React from 'react'
+import { Toaster } from "@/components/ui/toaster"
 
 const Layout = ({
   children
@@ -18,6 +19,7 @@ const Layout = ({
           <div className='mx-auto w-full max-w-5xl'>
             {children}
           </div>
+          <Toaster />
         </section>
         <RightSidebar />
       </div>

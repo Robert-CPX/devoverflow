@@ -19,6 +19,7 @@ import { createAnswer } from '@/lib/actions/answer.action';
 import Image from 'next/image'
 import { useTheme } from '@/context/ThemeProvider';
 import { ReloadIcon } from '@radix-ui/react-icons';
+import { toast } from '@/components/ui/use-toast';
 
 type AnswerFormProps = {
   question: string,
@@ -55,6 +56,7 @@ const AnswerForm = ({ question, questionId, userId }: AnswerFormProps) => {
         const editor = editorRef.current as any
         editor.setContent('')
       }
+      toast({ description: 'Answer posted successfully' })
     } catch (error) {
       console.log(error)
       throw error
@@ -76,8 +78,12 @@ const AnswerForm = ({ question, questionId, userId }: AnswerFormProps) => {
         const editor = editorRef.current as any
         editor.setContent(formattedData)
       }
+      toast({ description: 'AI Answer generated successfully' })
     } catch (error) {
-      alert('Something went wrong')
+      toast({
+        variant: "destructive",
+        description: 'Generate AI Answer failed :('
+      })
       throw error
     } finally {
       setIsSubmittingAIAnswer(false)

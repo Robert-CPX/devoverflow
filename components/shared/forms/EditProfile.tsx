@@ -51,6 +51,7 @@ const EditProfileForm = ({
     try {
       await updateUser({ clerkId, updateData: values, path: pathname })
       router.back()
+      toast({ description: 'Profile updated successfully' })
     } catch (error) {
       console.log(error)
     } finally {

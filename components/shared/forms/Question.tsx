@@ -22,6 +22,7 @@ import { Badge } from '@/components/ui/badge'
 import { createQuestion, editQuestion } from '@/lib/actions/question.action';
 import { useRouter, usePathname } from 'next/navigation';
 import { useTheme } from '@/context/ThemeProvider';
+import { useToast } from '@/components/ui/use-toast';
 
 type QuestionFormProps = {
   mongoUserId: string;
@@ -40,6 +41,7 @@ const QuestionForm = ({
   const editorRef = useRef(null);
   const router = useRouter()
   const pathname = usePathname()
+  const { toast } = useToast()
 
   const form = useForm<z.infer<typeof QuestionFormSchema>>({
     resolver: zodResolver(QuestionFormSchema),
@@ -52,6 +54,7 @@ const QuestionForm = ({
 
   const onSubmit = async (values: z.infer<typeof QuestionFormSchema>) => {
     setIsSubmitting(true)
+    let description = ''
     try {
       if (mode === 'create') {
         await createQuestion({
@@ -61,6 +64,7 @@ const QuestionForm = ({
           author: mongoUserId,
           path: pathname
         })
+        description = 'Question submitted successfully'
         router.push('/');
       } else if (mode === 'edit') {
         if (!questionId) throw new Error('Question ID is required')
@@ -71,8 +75,12 @@ const QuestionForm = ({
           tags: values.tags,
           path: pathname
         })
+        description = 'Question edited successfully'
         router.push(`/question/${questionId}`);
       }
+      toast({
+        description,
+      })
     } catch (error) {
       console.log(error)
     } finally {
