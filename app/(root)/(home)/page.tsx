@@ -9,6 +9,8 @@ import NoResult from '@/components/shared/NoResult'
 import { getQuestions } from '@/lib/actions/question.action'
 import Pagination from '@/components/shared/Pagination'
 import type { Metadata } from 'next'
+import { redirect } from 'next/navigation'
+import { auth } from '@clerk/nextjs'
 
 export const metadata: Metadata = {
   title: 'Home',
@@ -33,6 +35,10 @@ const Home = async ({
   }
 }) => {
   const page = searchParams.page as number < 1 ? 1 : searchParams.page as number
+  const { userId } = auth()
+  if (searchParams.filter === 'recommended') {
+    if (!userId) redirect('/sign-in')
+  }
   const { questions, isNext } = await getQuestions({
     searchQuery: decodeURI(searchParams.q as string ?? ""),
     filter: decodeURI(searchParams.filter as string ?? ""),

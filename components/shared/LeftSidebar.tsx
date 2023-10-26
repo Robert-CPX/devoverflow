@@ -17,7 +17,7 @@ const LeftSidebar = () => {
         {sidebarLinks.map((item) => {
           const isActive = (pathname.includes(item.route) && item.route.length > 1) || pathname === item.route;
           if (item.route === '/profile') {
-            item.route = `/profile/${userId}`
+            item.route = `/profile/${userId ?? ''}`
           }
           return (
             <Link key={item.label} href={item.route} className={`${isActive ? 'primary-gradient rounded-lg text-light-900' : 'text-dark300_light900'} flex max-h-[56px] items-center justify-start gap-4 bg-transparent p-4`}>

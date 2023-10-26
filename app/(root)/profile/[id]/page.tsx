@@ -11,6 +11,7 @@ import NoResult from '@/components/shared/NoResult'
 import Pagination from '@/components/shared/Pagination'
 import { getBadges } from '@/lib/actions/badge.action'
 import type { Metadata, ResolvingMetadata } from 'next'
+import { redirect } from 'next/navigation'
 
 type Props = {
   params: { id: string }
@@ -21,7 +22,9 @@ export async function generateMetadata(
   { params, searchParams }: Props,
   parent: ResolvingMetadata
 ): Promise<Metadata> {
+  if (!params.id) redirect('/sign-in')
   const { user } = await getUserInfo({ userId: params.id })
+  if (!user) redirect('/sign-in')
   return {
     title: user.username ?? "Profile",
     openGraph: {
