@@ -8,8 +8,33 @@ import { ClerkProvider } from '@clerk/nextjs'
 import ThemeProvider from '../context/ThemeProvider'
 
 export const metadata: Metadata = {
-  title: 'devoverflow',
-  description: 'A stackoverflow clone for developers',
+  title: {
+    default: 'devoverflow',
+    template: '%s | devoverflow',
+  },
+  description: 'A stackoverflow-like project made with 🔥',
+  twitter: {
+    card: 'summary_large_image',
+    title: 'devoverflow',
+    description: 'A stackoverflow-like project made with 🔥',
+    creator: '@Robert-CPX',
+    images: ['/assets/images/logo.png'],
+  },
+  openGraph: {
+    title: 'devoverflow',
+    description: 'A stackoverflow-like project made with 🔥',
+    url: 'https://devstackoverflow.vercel.app/',
+    siteName: 'devoverflow',
+    images: [
+      {
+        url: '/assets/images/logo.png',
+        width: 273,
+        height: 46,
+      }
+    ],
+    locale: 'en_US',
+    type: 'website',
+  },
 }
 
 const inter = Inter({

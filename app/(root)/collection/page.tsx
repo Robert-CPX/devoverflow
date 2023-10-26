@@ -8,6 +8,11 @@ import { redirect } from 'next/navigation'
 import NoResult from '@/components/shared/NoResult'
 import QuestionCard from '@/components/shared/cards/QuestionCard'
 import Pagination from '@/components/shared/Pagination'
+import type { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'Saved Questions',
+}
 
 const SearchSection = () => {
   return (

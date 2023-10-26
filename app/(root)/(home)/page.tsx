@@ -8,7 +8,11 @@ import { HomePageFilters } from '@/constants/filter'
 import NoResult from '@/components/shared/NoResult'
 import { getQuestions } from '@/lib/actions/question.action'
 import Pagination from '@/components/shared/Pagination'
+import type { Metadata } from 'next'
 
+export const metadata: Metadata = {
+  title: 'Home',
+}
 const SearchSection = () => {
   return (
     <div className='flex gap-3 max-sm:flex-col'>

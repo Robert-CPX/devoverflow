@@ -5,6 +5,11 @@ import { QuestionFilters } from '@/constants/filter'
 import NoResult from '@/components/shared/NoResult'
 import Pagination from '@/components/shared/Pagination'
 import JobCard from '@/components/shared/cards/JobCard'
+import type { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'Jobs',
+}
 
 const SearchSection = () => {
   return (

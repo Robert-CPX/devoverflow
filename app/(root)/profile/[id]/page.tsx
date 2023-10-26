@@ -10,15 +10,34 @@ import QuestionCard from '@/components/shared/cards/QuestionCard'
 import NoResult from '@/components/shared/NoResult'
 import Pagination from '@/components/shared/Pagination'
 import { getBadges } from '@/lib/actions/badge.action'
+import type { Metadata, ResolvingMetadata } from 'next'
+
+type Props = {
+  params: { id: string }
+  searchParams: { [key: string]: number | undefined }
+}
+
+export async function generateMetadata(
+  { params, searchParams }: Props,
+  parent: ResolvingMetadata
+): Promise<Metadata> {
+  const { user } = await getUserInfo({ userId: params.id })
+  return {
+    title: user.username ?? "Profile",
+    openGraph: {
+      title: user.username ?? "Profile",
+      description: 'The React Framework for the Web',
+      url: `https://devstackoverflow.vercel.app/${user.clerkId}`,
+      siteName: 'devoverflow',
+      images: ["/assets/images/logo.png"],
+      type: 'website',
+    }
+  }
+}
 
 const Page = async ({
   params, searchParams
-}: {
-  params: { id: string };
-  searchParams: {
-    [key: string]: number | undefined
-  }
-}) => {
+}: Props) => {
   const { userId: clerkId } = auth()
   const page = searchParams.page ?? 1
   const { user, totalAnswers, totalQuestions } = await getUserInfo({ userId: params.id })

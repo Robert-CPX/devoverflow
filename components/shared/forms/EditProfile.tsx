@@ -19,6 +19,7 @@ import { Button } from "@/components/ui/button"
 import { EditProfileSchema } from '@/lib/validations'
 import { updateUser } from '@/lib/actions/user.action';
 import { usePathname, useRouter } from 'next/navigation';
+import { toast } from '@/components/ui/use-toast';
 
 type QuestionFormProps = {
   clerkId: string;

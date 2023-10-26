@@ -6,6 +6,11 @@ import { getAllTags } from '@/lib/actions/tag.action'
 import TagCard from '@/components/shared/cards/TagCard'
 import NoResult from '@/components/shared/NoResult'
 import Pagination from '@/components/shared/Pagination'
+import type { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'All Tags',
+}
 
 const SearchSection = () => {
   return (

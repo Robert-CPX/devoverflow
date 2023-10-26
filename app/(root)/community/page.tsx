@@ -6,6 +6,11 @@ import { UserFilters } from '@/constants/filter'
 import { getAllUsers } from '@/lib/actions/user.action'
 import NoCommunity from '@/components/shared/NoCommunity'
 import Pagination from '@/components/shared/Pagination'
+import type { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'Community',
+}
 
 const SearchSection = () => {
   return (
