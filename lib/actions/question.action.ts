@@ -84,7 +84,7 @@ export const getQuestions = async (param: GetQuestionsParams) => {
     let filterCmd = {}
     switch (filter) {
       case 'newest': filterCmd = { createdAt: -1 }; break;
-      case 'recommended': filterCmd = { upvotes: 1 }; break;
+      case 'recommended': filterCmd = { upvotes: 1 }; break;// TODO: add more logic
       case 'frequent': filterCmd = { views: -1 }; break;
       case 'unanswered': filterCmd = { answers: 1 }; break;
     }
