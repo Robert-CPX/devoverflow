@@ -59,11 +59,10 @@ const Page = async ({
   })
 
   const { userId } = auth()
-  if (!userId) return (<p>Not logged in</p>)
-  const mongooseUser = await getUsereById({ userId })
-  const upvotedQuestion = question.upvotes.some(_id => _id === mongooseUser._id)
-  const downvotedQuestion = question.downvotes.some(_id => _id === mongooseUser._id)
-  const isSaved = question.saves.some(userId => userId === mongooseUser._id)
+  const mongooseUser = userId === null ? null : await getUsereById({ userId })
+  const upvotedQuestion = mongooseUser === null ? false : question.upvotes.some(_id => _id === mongooseUser._id)
+  const downvotedQuestion = mongooseUser === null ? false : question.downvotes.some(_id => _id === mongooseUser._id)
+  const isSaved = mongooseUser === null ? false : question.saves.some(userId => userId === mongooseUser._id)
 
   return (
     <article className='flex flex-col justify-start gap-[30px]'>
@@ -73,7 +72,7 @@ const Page = async ({
             <Image src={question.author.picture} alt="profile" width={22} height={22} className='rounded-full' />
             <p className='paragraph-semibold text-dark300_light700'>{question.author.name}</p>
           </Link>
-          <Votes type='Question' upvoted={upvotedQuestion} downvoted={downvotedQuestion} id={question._id} userId={mongooseUser._id} upvoteNum={question.upvotes.length} downvoteNum={question.downvotes.length} saved={isSaved} />
+          <Votes type='Question' upvoted={upvotedQuestion} downvoted={downvotedQuestion} id={question._id} userId={mongooseUser?._id} upvoteNum={question.upvotes.length} downvoteNum={question.downvotes.length} saved={isSaved} />
         </div>
         <h2 className='h2-semibold text-dark200_light900 mb-1'>{question.title}</h2>
         <Influence asked={getTimeStamp(question.createdAt)} answers={question.answers.length} views={question.views} votes={0} />
@@ -97,14 +96,14 @@ const Page = async ({
           upvotes={answer.upvotes}
           downvotes={answer.downvotes}
           author={{ clerkId: answer.author.clerkId, _id: answer.author._id.toString(), name: answer.author.name, picture: answer.author.picture }}
-          userId={mongooseUser._id}
+          userId={mongooseUser?._id}
           createdAt={getTimeStamp(answer.createdAt)}
         />
       ))}
       <div className={answers.length === 0 ? 'hidden' : ''}>
         <Pagination page={page} isNext={isNext} />
       </div>
-      <AnswerForm question={question.content} questionId={question._id} userId={mongooseUser._id} />
+      <AnswerForm question={question.content} questionId={question._id} userId={mongooseUser?._id} />
     </article>
   )
 }

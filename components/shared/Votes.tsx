@@ -8,11 +8,12 @@ import Image from 'next/image'
 import { usePathname, useRouter } from 'next/navigation'
 import { useEffect } from 'react'
 import { viewQuestion } from '@/lib/actions/interaction.action'
+import { toast } from '@/components/ui/use-toast';
 
 type VotesProps = {
   type: "Question" | "Answer";
   id: string;
-  userId: string;
+  userId?: string;
   upvoted: boolean;
   downvoted: boolean;
   upvoteNum: number;
@@ -27,6 +28,10 @@ const Votes = ({
   const router = useRouter()
 
   const handleUpvote = async () => {
+    if (!userId) {
+      toast({ title: "Please log in", description: "You need to login to continue" })
+      return
+    }
     const upvoteParam = { userId, hasupVoted: upvoted, hasdownVoted: downvoted, path: pathname }
     if (type === "Question") {
       await upvoteQuestion({ questionId: id, ...upvoteParam })
@@ -36,6 +41,10 @@ const Votes = ({
   }
 
   const handleDownvote = async () => {
+    if (!userId) {
+      toast({ title: "Please log in", description: "You need to login to continue" })
+      return
+    }
     const downvoteParam = { userId, hasupVoted: upvoted, hasdownVoted: downvoted, path: pathname }
     if (type === "Question") {
       await downvoteQuestion({ questionId: id, ...downvoteParam })
@@ -45,6 +54,10 @@ const Votes = ({
   }
 
   const handleSave = async () => {
+    if (!userId) {
+      toast({ title: "Please log in", description: "You need to login to continue" })
+      return
+    }
     await saveQuestion({ questionId: id, userId, path: pathname })
   }
 

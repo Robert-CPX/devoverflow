@@ -24,7 +24,7 @@ import { toast } from '@/components/ui/use-toast';
 type AnswerFormProps = {
   question: string,
   questionId: string,
-  userId: string,
+  userId?: string,
 }
 
 const AnswerForm = ({ question, questionId, userId }: AnswerFormProps) => {
@@ -43,6 +43,10 @@ const AnswerForm = ({ question, questionId, userId }: AnswerFormProps) => {
   })
 
   const onSubmit = async (values: z.infer<typeof AnswerFormSchema>) => {
+    if (!userId) {
+      toast({ title: "Please log in", description: "You need to login to continue" })
+      return
+    }
     setIsSubmitting(true)
     try {
       await createAnswer({

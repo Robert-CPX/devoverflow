@@ -5,7 +5,7 @@ import Votes from '../Votes';
 
 type AnswerCardProps = {
   _id: string;
-  userId: string;
+  userId?: string;
   author: {
     _id: string;
     clerkId: string;
@@ -39,7 +39,7 @@ const AnswerCard = ({
           </Link>
           <p className='small-regular text-light400_light500'><span className='max-sm:hidden'>·</span>{` answered ${createdAt}`}</p>
         </div>
-        <Votes type='Answer' upvoted={upvoted} downvoted={downvoted} id={_id} userId={author._id} upvoteNum={upvotes.length} downvoteNum={downvotes.length} saved />
+        <Votes type='Answer' upvoted={upvoted} downvoted={downvoted} id={_id} userId={userId} upvoteNum={upvotes.length} downvoteNum={downvotes.length} saved />
       </div>
       <div className='markdown mb-10'>
         <ParseHTML data={content} />
