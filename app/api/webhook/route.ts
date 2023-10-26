@@ -90,5 +90,5 @@ export async function POST(req: Request) {
     return NextResponse.json({ message: "User deleted successfully", user: mongoUser })
   }
 
-  return new Response('', { status: 201 })
+  return NextResponse.json({ message: 'OK' })
 }
