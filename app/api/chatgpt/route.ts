@@ -1,3 +1,5 @@
+import { NextResponse } from "next/server"
+
 export async function POST(req: Request) {
   const question = await req.json()
   try {
@@ -22,8 +24,8 @@ export async function POST(req: Request) {
       }),
     })
     const data = await response.json()
-    return { answer: data.choices[0].message.content }
+    return NextResponse.json({ answer: data.choices[0].message.content })
   } catch (error) {
-    console.log(error)
+    return NextResponse.error()
   }
 }
