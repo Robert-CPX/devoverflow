@@ -29,7 +29,7 @@ type QuestionFormProps = {
 const EditProfileForm = ({
   clerkId, user
 }: QuestionFormProps) => {
-  // TODO: json to zod?
+
   const { name, username, profileLink, location, bio } = JSON.parse(user)
 
   const [isSubmitting, setIsSubmitting] = useState(false)

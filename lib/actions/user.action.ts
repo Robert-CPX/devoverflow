@@ -102,7 +102,7 @@ export const getAllUsers = async (params: GetAllUsersParams) => {
     throw error
   }
 }
-// TODO: in video, why he doesn't upate QuestionDocument?
+
 export const saveQuestion = async (param: ToggleSaveQuestionParams) => {
   try {
     connectToDatabase()

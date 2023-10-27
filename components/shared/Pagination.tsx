@@ -4,7 +4,6 @@ import { useState } from 'react'
 import { Button } from '../ui/button'
 import { useRouter, useSearchParams } from 'next/navigation'
 
-// TODO: consider use isNext(from server side) instead of count
 type PaginationProps = {
   page: number
   isNext: boolean

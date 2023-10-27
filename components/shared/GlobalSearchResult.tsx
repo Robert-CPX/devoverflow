@@ -56,7 +56,8 @@ const GlobalSearchResult = ({ show, handleClickOutside }: GlobalSearchResultProp
   }) => {
     let link = ''
     switch (type) {
-      case 'answer' || 'question':
+      case 'question':
+      case 'answer':
         link = `/question/${id}`
         break
       case 'tag':

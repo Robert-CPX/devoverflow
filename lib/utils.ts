@@ -45,7 +45,6 @@ export const calculateBadges = ({
 }: {
   reputation: number, questionNum: number, answerNum: number, upvotes: number, mostViewedQuestion: number
 }): Badges => {
-  console.log(reputation, questionNum, answerNum, upvotes, mostViewedQuestion)
   const gold = reputation > 1000 ? Math.floor(Math.min(questionNum / 20, answerNum / 40, upvotes / 10000, mostViewedQuestion / 10000)) : 0
   const silver = reputation > 500 ? Math.floor(Math.min(questionNum / 10, answerNum / 20, upvotes / 500, mostViewedQuestion / 1000)) : 0
   const bronze = reputation > 100 ? Math.floor(Math.min(questionNum / 5, answerNum / 10, upvotes / 50, mostViewedQuestion / 100)) : 0

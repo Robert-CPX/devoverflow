@@ -66,8 +66,7 @@ const QuestionCard = ({
           <RenderTag key={tag._id} _id={tag._id} name={tag.name} customClassName="uppercase subtle-medium rounded-md px-4 py-2" />
         ))}
       </div>
-      {/* TODO: fix this */}
-      <div className="mt-3 flex justify-between gap-2 max-[500px]:flex-col">
+      <div className="mt-3 flex justify-between gap-2 max-md:flex-col">
         <Link href={`/profile/${author.clerkId}`} className='flex cursor-pointer justify-start gap-1'>
           <Image src={author.picture} alt="profile pic" width={20} height={20} className='rounded-full' />
           <p className='text-dark400_light800 body-medium line-clamp-1'>{author.name}<span className='text-dark400_light800 small-regular max-sm:hidden'> {`• ${getTimeStamp(createdAt)}`}</span></p>
