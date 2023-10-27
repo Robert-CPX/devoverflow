@@ -34,3 +34,21 @@ export const getJobs = async (params: GetJobsParams) => {
     throw error
   }
 }
+
+export const getAllCountries = async () => {
+  try {
+    const response = await fetch("https://restcountries.com/v3.1/all", { method: 'GET' })
+    const result = await response.json()
+    const countries: { name: string, value: string, flag: string }[] = result.map((country: any) => {
+      return {
+        name: country.name.common,
+        value: country.name.common.toLowerCase(),
+        flag: country.flag,
+      }
+    })
+    return countries
+  } catch (error) {
+    console.log("error")
+    throw error
+  }
+}

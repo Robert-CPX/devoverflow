@@ -1,25 +1,24 @@
 import { LocalSearchBar } from '@/components/shared/SearchBar'
 import React from 'react'
 import { Filter } from '@/components/shared/Filter'
-import { CountryFilters } from '@/constants/filter'
 import NoResult from '@/components/shared/NoResult'
 import Pagination from '@/components/shared/Pagination'
 import JobCard from '@/components/shared/cards/JobCard'
 import type { Metadata } from 'next'
 import { Button } from '@/components/ui/button'
-import { getJobs } from '@/lib/actions/job.action'
+import { getAllCountries, getJobs } from '@/lib/actions/job.action'
 
 export const metadata: Metadata = {
   title: 'Jobs',
 }
 
-const SearchSection = () => {
+const SearchSection = ({ countries }: { countries: { name: string, value: string }[] }) => {
   return (
     <div className='flex gap-4 max-sm:flex-col'>
       <div className='grow'>
         <LocalSearchBar type='Job' />
       </div>
-      <Filter filters={CountryFilters} customClassName='min-w-[200px] grow' />
+      <Filter filters={countries} customClassName='job-search min-w-[200px] grow' />
       <Button type="submit" className='primary-gradient min-h-[56px] w-[170px] px-4 py-3 text-light-900'>
         Find Jobs
       </Button>
@@ -39,11 +38,12 @@ const Page = async ({
   const pageSize = searchParams.pageSize as number < 1 ? 1 : searchParams.pageSize as number
   const country = searchParams.filter as string
   const { jobs, isNext } = await getJobs({ query, page, pageSize, country })
+  const countries = await getAllCountries()
 
   return (
     <section className='flex flex-col gap-8'>
       <h1 className='h1-bold text-dark100_light900'>Design</h1>
-      <SearchSection />
+      <SearchSection countries={countries} />
       {jobs.length > 0 ? (
         jobs.map((job) => (
           <JobCard

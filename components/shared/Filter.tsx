@@ -12,6 +12,7 @@ import {
 import { useRouter, useSearchParams } from 'next/navigation';
 import { HomePageFilters } from '@/constants/filter';
 import { Button } from '../ui/button';
+import Image from 'next/image'
 
 type FilterProps = {
   filters: {
@@ -33,12 +34,19 @@ const Filter = ({ filters, customClassName }: FilterProps) => {
   return (
     <Select onValueChange={handleFilter}>
       <SelectTrigger className={`background-light800_darkgradient text-dark500_light700 light-border h-full min-h-[56px] w-[200px] max-sm:w-full ${customClassName}`}>
-        <SelectValue placeholder="Select a Filter" />
+        {customClassName?.includes('job-search') ? (
+          <div className='flex justify-start gap-3'>
+            <Image src="/assets/icons/location.svg" alt="location" width={16} height={16} />
+            <SelectValue placeholder="Select Location" />
+          </div>
+        ) : (
+          <SelectValue placeholder="Select a Filter" />
+        )}
       </SelectTrigger>
-      <SelectContent className='background-light900_dark200 text-dark400_light900 light-border'>
+      <SelectContent className='background-light900_dark200 text-dark400_light900 light-border max-h-[380px]'>
         <SelectGroup>
           {filters.map((filter) => (
-            <SelectItem className='hover:background-light800_dark300' key={filter.value} value={`${filter.value}`}>{filter.name}</SelectItem>
+            <SelectItem className='hover:background-light800_dark300 min-h-[40px]' key={filter.value} value={`${filter.value}`}>{filter.name}</SelectItem>
           ))}
         </SelectGroup>
       </SelectContent>
