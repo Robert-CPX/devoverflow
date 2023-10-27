@@ -1,11 +1,13 @@
 import { LocalSearchBar } from '@/components/shared/SearchBar'
 import React from 'react'
 import { Filter } from '@/components/shared/Filter'
-import { QuestionFilters } from '@/constants/filter'
+import { CountryFilters } from '@/constants/filter'
 import NoResult from '@/components/shared/NoResult'
 import Pagination from '@/components/shared/Pagination'
 import JobCard from '@/components/shared/cards/JobCard'
 import type { Metadata } from 'next'
+import { Button } from '@/components/ui/button'
+import { getJobs } from '@/lib/actions/job.action'
 
 export const metadata: Metadata = {
   title: 'Jobs',
@@ -13,9 +15,14 @@ export const metadata: Metadata = {
 
 const SearchSection = () => {
   return (
-    <div className='flex gap-3 max-sm:flex-col'>
-      <LocalSearchBar type='Job' />
-      <Filter filters={QuestionFilters} />
+    <div className='flex gap-4 max-sm:flex-col'>
+      <div className='grow'>
+        <LocalSearchBar type='Job' />
+      </div>
+      <Filter filters={CountryFilters} customClassName='min-w-[200px] grow' />
+      <Button type="submit" className='primary-gradient min-h-[56px] w-[170px] px-4 py-3 text-light-900'>
+        Find Jobs
+      </Button>
     </div>
   )
 }
@@ -27,23 +34,29 @@ const Page = async ({
     [key: string]: string | number | undefined
   }
 }) => {
+  const query = searchParams.q as string
   const page = searchParams.page as number < 1 ? 1 : searchParams.page as number
-  const { jobs, isNext } = {
-    jobs:
-      [
-        { _id: "1", icon: "", title: "-- New Orleans, LA", description: "Build your career at Sazerac! With nearly four centuries of rich history, Sazerac Company has flourished as an independent, American family-owned company with operations in the United States", type: "full time", remuneration: "1", link: "https://bing.com", location: "-34.397, 150.644" },
-        { _id: "2", icon: "", title: "-- New Orleans, LA", description: "Build your career at Sazerac! With nearly four centuries of rich history, Sazerac Company has flourished as an independent, American family-owned company with operations in the United States", type: "full time", link: "https://bing.com", location: "30.234, 120.666" },
-      ],
-    isNext: true
-  }
+  const pageSize = searchParams.pageSize as number < 1 ? 1 : searchParams.pageSize as number
+  const country = searchParams.filter as string
+  const { jobs, isNext } = await getJobs({ query, page, pageSize, country })
 
   return (
     <section className='flex flex-col gap-8'>
-      <h1 className='h1-bold text-dark100_light900'>Jobs</h1>
+      <h1 className='h1-bold text-dark100_light900'>Design</h1>
       <SearchSection />
       {jobs.length > 0 ? (
         jobs.map((job) => (
-          <JobCard key={job._id} job={job} />
+          <JobCard
+            key={job.job_id}
+            title={job.job_title}
+            description={job.job_description}
+            icon={job.employer_logo}
+            link={job.job_apply_link}
+            location={`${job.job_city},${job.job_country}`}
+            type={job.job_employment_type}
+            remuneration={`${job.job_min_salary && job.job_max_salary ? `${job.job_min_salary} - ${job.job_max_salary}` : 'Not disclosed'}`}
+            tag={job.job_is_remote}
+          />
         ))
       ) : (
         <div className='flex justify-center'>

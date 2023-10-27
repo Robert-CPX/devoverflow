@@ -174,3 +174,10 @@ export type UpdateReputationParams = {
 export type GetBadgesParams = {
   userId: string;
 }
+
+export type GetJobsParams = {
+  query: string;
+  page: number;
+  pageSize: number;
+  country?: string;
+}

@@ -3,17 +3,17 @@ import { ObjectId } from 'mongoose'
 
 export const QuestionFormSchema = z.object({
   title: z.string().min(3).max(130),
-  detail: z.string().nonempty(),
+  detail: z.string(),
   tags: z.array(z.string().min(1).max(15)).min(1).max(3),
 })
 
 export const AnswerFormSchema = z.object({
-  answer: z.string().nonempty(),
+  answer: z.string(),
 })
 
 export const AnswerSchema = z.object({
   _id: z.coerce.string(),
-  content: z.string().nonempty(),
+  content: z.string(),
   upvotes: z.coerce.string().array(),
   downvotes: z.coerce.string().array(),
   author: z.custom<{ _id: ObjectId, clerkId: string, name: string, picture: string }>(),
@@ -24,7 +24,7 @@ export const AnswerListSchema = z.array(AnswerSchema)
 
 export const AnswerWithQuestionSchema = z.object({
   _id: z.coerce.string(),
-  content: z.string().nonempty(),
+  content: z.string(),
   upvotes: z.coerce.string().array(),
   downvotes: z.coerce.string().array(),
   author: z.custom<{ _id: string, clerkId: string, name: string, picture: string }>(),
@@ -76,7 +76,7 @@ export const PopularTagListSchema = z.array(PopularTagSchema)
 export const QuestionSchema = z.object({
   _id: z.coerce.string(),
   title: z.string().min(3).max(130),
-  content: z.string().nonempty(),
+  content: z.string(),
   tags: z.custom<{ _id: ObjectId, name: string }>().array(),
   views: z.number(),
   author: UserSchema,
@@ -142,3 +142,26 @@ export const GlobalSearchSchema = z.object({
 })
 
 export const GlobalSearchListSchema = z.array(GlobalSearchSchema)
+
+export const JobSchema = z.object({
+  job_id: z.string(),
+  employer_name: z.string(),
+  job_city: z.string(),
+  job_country: z.string(),
+  job_title: z.string(),
+  job_apply_link: z.string().url(),
+  job_description: z.string(),
+  job_is_remote: z.boolean(),
+  job_posted_at_datetime_utc: z.string(),
+  job_employment_type: z.string(),
+  employer_logo: z.string().url().nullable(),
+  job_min_salary: z.number().nullable(),
+  job_max_salary: z.number().nullable(),
+  job_salary_currency: z.string().nullable(),
+})
+
+export const JobListSchema = z.any().array().transform((data) => {
+  return data.map((item) => JobSchema.safeParse(item).success ? item : undefined)
+    .filter((item) => item !== undefined)
+    .map((item) => item as z.infer<typeof JobSchema>)
+})

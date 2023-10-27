@@ -32,7 +32,7 @@ const Filter = ({ filters, customClassName }: FilterProps) => {
 
   return (
     <Select onValueChange={handleFilter}>
-      <SelectTrigger className="background-light800_darkgradient text-dark500_light700 light-border h-full min-h-[56px] w-[200px] max-sm:w-full">
+      <SelectTrigger className={`background-light800_darkgradient text-dark500_light700 light-border h-full min-h-[56px] w-[200px] max-sm:w-full ${customClassName}`}>
         <SelectValue placeholder="Select a Filter" />
       </SelectTrigger>
       <SelectContent className='background-light900_dark200 text-dark400_light900 light-border'>
